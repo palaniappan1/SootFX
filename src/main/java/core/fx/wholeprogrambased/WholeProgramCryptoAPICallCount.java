@@ -27,13 +27,10 @@ public class WholeProgramCryptoAPICallCount implements WholeProgramFEU<Long> {
         Set<SootMethod> methods = new HashSet<>();
         Stream<Edge> stream = Streams.stream(iterator);
         stream.forEach(edge -> {
-            if(FxUtil.isCryptoPackage(edge.src().getDeclaringClass().getPackageName())){
-                // This methods list shows all the methods from where the crypto calls are made
-                methods.add(edge.src());
-            }
             if(FxUtil.isCryptoPackage(edge.tgt().getDeclaringClass().getPackageName())){
-                // This methods list shows all the methods to where the crypto calls are made
-                methods.add(edge.tgt());
+                // This methods list shows all the methods from where the crypto calls are made
+                // The design decision here is that we should know the number of methods which has any crypto calls
+                methods.add(edge.src());
             }
         });
         long methodCount = methods.size();
