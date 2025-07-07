@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * all methods from scene
+ * all methods from the application classes present in the scene (only reachable ones)
  */
 public class WholeProgramAllAppMethodCount implements WholeProgramFEU<Long> {
 

@@ -12,30 +12,39 @@ import java.util.concurrent.TimeUnit;
 
 public class EvaluationJar {
 
+//    public static void main(String[] args) throws IOException {
+//        for (int i = 74; i <= 74; i++) {
+//            String jarName = "mvn-" + i;
+//            String path = "/Users/kadiray/Workspace/maven-top/" + jarName + ".jar";
+//            String out = "/Users/kadiray/Workspace/SootFX/eval/jar/" + jarName + "/";
+//
+//            try {
+//                Stopwatch stopwatch = Stopwatch.createStarted();
+//
+//                methodFeatures(path, out);
+//                long methodDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+//
+//                classFeatures(path, out);
+//                long classDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+//
+//                wpFeatures(path, out);
+//                long wpDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+//
+//                logMeta(out, methodDone, classDone - methodDone, wpDone - classDone, new File(path).length());
+//            } catch (Exception e){
+//                e.printStackTrace();
+//                System.err.println("error in apk:" + jarName);
+//            }
+//        }
+//    }
+
     public static void main(String[] args) throws IOException {
-        for (int i = 74; i <= 74; i++) {
-            String jarName = "mvn-" + i;
-            String path = "/Users/kadiray/Workspace/maven-top/" + jarName + ".jar";
-            String out = "/Users/kadiray/Workspace/SootFX/eval/jar/" + jarName + "/";
-
-            try {
-                Stopwatch stopwatch = Stopwatch.createStarted();
-
-                methodFeatures(path, out);
-                long methodDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
-
-                classFeatures(path, out);
-                long classDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
-
-                wpFeatures(path, out);
-                long wpDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
-
-                logMeta(out, methodDone, classDone - methodDone, wpDone - classDone, new File(path).length());
-            } catch (Exception e){
-                e.printStackTrace();
-                System.err.println("error in apk:" + jarName);
-            }
-        }
+        SootFX sootFX = new SootFX();
+        sootFX.addClassPath("/Users/palaniappanmuthuraman/WorkSpace/LinearConstantPropagation/IDELinearConstantAnalysisClientSootUp/src/test/resources/latest/commons-codec-1.15.jar"); //path to jar or apk file
+//        Set<MethodFeatureSet> featureSets = sootFX.extractAllMethodFeatures();
+//        sootFX.printMultiSetToCSV(featureSets, "/Users/palaniappanmuthuraman/WorkSpace/SootFX/method_output.csv"); //path to output csv file
+        WholeProgramFeatureSet wholeProgramFeatureSet = sootFX.extractAllWholeProgramFeatures();
+        sootFX.printSingleSetToCSV(wholeProgramFeatureSet, "/Users/palaniappanmuthuraman/WorkSpace/SootFX/whole_output.csv");
     }
 
     public static void logMeta(String path, long methodTime, long classTime, long wpTime, long fileSizeInBytes) throws IOException {

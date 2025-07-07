@@ -11,6 +11,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+/*
+Gives the number of statements present in the all the reachable methods
+ */
+
 public class WholeProgramStmtCount implements WholeProgramFEU<Long> {
 
     @Override

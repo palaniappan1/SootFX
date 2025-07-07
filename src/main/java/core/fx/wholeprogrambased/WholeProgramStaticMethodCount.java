@@ -12,6 +12,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Stream;
 
+/*
+Gives all the count of the static methods present in the reachable methods from the call graph
+ */
+
 public class WholeProgramStaticMethodCount implements WholeProgramFEU<Long> {
 
     @Override

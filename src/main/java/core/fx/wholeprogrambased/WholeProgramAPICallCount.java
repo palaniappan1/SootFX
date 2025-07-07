@@ -11,6 +11,9 @@ import soot.jimple.toolkits.callgraph.Edge;
 import java.util.*;
 import java.util.stream.Stream;
 
+/*
+Give a path that consisting of set of method signatures and get the count of the method calls
+ */
 public class WholeProgramAPICallCount implements WholeProgramFEU<Map<String, Long>> {
 
     private List<String> methodSignatures;

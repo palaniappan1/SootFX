@@ -12,6 +12,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+/*
+ Count of all the assign statements present in the all the reachable methods
+ */
+
 public class WholeProgramAssignStmtCount implements WholeProgramFEU<Long> {
 
     @Override

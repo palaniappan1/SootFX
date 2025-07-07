@@ -12,6 +12,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Stream;
 
+/*
+Gives the count of all the java library methods present in the reachable methods
+ */
+
 public class WholeProgramJavaLibMethodCount implements WholeProgramFEU<Long> {
 
     @Override

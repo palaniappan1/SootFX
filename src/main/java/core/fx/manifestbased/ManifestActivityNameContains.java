@@ -16,7 +16,7 @@ public class ManifestActivityNameContains implements ManifestFEU<Boolean> {
     @Override
     public Feature<Boolean> extract(ProcessManifest target) {
         boolean contains = false;
-        String name = (String) target.getActivities().get(0).getAttributes().get("name").getValue();
+        String name = target.getActivities().asList().get(0).getNameString();
         return new Feature<>(this.getClass().getSimpleName(), StringUtils.containsIgnoreCase(name, value));
     }
 

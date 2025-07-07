@@ -12,7 +12,7 @@ for f in availableFeatures:
     print(f.getName())
 
 # extract all method features
-sootFX.addClassPath("/path/to/jar")
+sootFX.addClassPath("/Users/palaniappanmuthuraman/WorkSpace/LinearConstantPropagation/IDELinearConstantAnalysisClientSootUp/src/test/resources/latest/commons-codec-1.15.jar")
 extracted_features = sootFX.extractAllMethodFeatures()
 df = converter.to_dataframe(extracted_features)
 

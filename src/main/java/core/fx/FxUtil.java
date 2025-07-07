@@ -7,6 +7,7 @@ import core.fx.base.ClassFEU;
 import core.fx.base.ManifestFEU;
 import core.fx.base.MethodFEU;
 import core.fx.base.WholeProgramFEU;
+import core.fx.methodbased.MethodParamIsInterface;
 import org.reflections.Reflections;
 import soot.*;
 import soot.jimple.infoflow.android.axml.AXmlAttribute;
@@ -83,9 +84,19 @@ public class FxUtil {
         return !name.startsWith("android.") && !name.startsWith("java.") && !name.startsWith("javax.") && !name.startsWith("dalvik.") && !name.startsWith("sun.") && !name.startsWith("jdk.");
     }
 
+    public static boolean isCryptoPackage(String name) {
+        return name.startsWith("javax.crypto.")
+                || name.startsWith("java.security.")
+                || name.startsWith("org.bouncycastle.")
+                || name.startsWith("com.sun.crypto.")
+                || name.startsWith("sun.security.");
+    }
+
+
     public static List<FeatureDescription> listAllMethodFeatures(){
         List<FeatureDescription> methodList = new ArrayList<>();
         Set<Class<? extends MethodFEU>> methodBased = reflections.getSubTypesOf(MethodFEU.class);
+        methodBased.remove(MethodParamIsInterface.class);
         for (Class<? extends MethodFEU> m : methodBased) {
             FeatureDescription desc = new FeatureDescription(m.getSimpleName(), ""); // TODO: define descriptions and get
             methodList.add(desc);

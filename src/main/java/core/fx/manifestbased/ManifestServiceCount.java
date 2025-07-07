@@ -8,7 +8,7 @@ public class ManifestServiceCount implements ManifestFEU<Long> {
 
     @Override
     public Feature<Long> extract(ProcessManifest target) {
-        Long count = new Long(target.getServices().size());
+        Long count = (long) target.getServices().asList().size();
         return new Feature<>(this.getClass().getSimpleName(), count);
     }
 

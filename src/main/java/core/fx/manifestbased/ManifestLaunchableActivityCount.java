@@ -8,7 +8,7 @@ public class ManifestLaunchableActivityCount implements ManifestFEU<Long> {
 
     @Override
     public Feature<Long> extract(ProcessManifest target) {
-        Long count = new Long(target.getLaunchableActivities().size());
+        Long count = (long) target.getLaunchableActivityNodes().size();
         return new Feature<>(this.getClass().getSimpleName(), count);
     }
 }
