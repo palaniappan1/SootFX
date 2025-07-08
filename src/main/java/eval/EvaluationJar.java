@@ -39,12 +39,15 @@ public class EvaluationJar {
 //    }
 
     public static void main(String[] args) throws IOException {
+        long start = System.currentTimeMillis();
         SootFX sootFX = new SootFX();
         sootFX.addClassPath("/Users/palaniappanmuthuraman/WorkSpace/LinearConstantPropagation/IDELinearConstantAnalysisClientSootUp/src/test/resources/latest/commons-codec-1.15.jar"); //path to jar or apk file
 //        Set<MethodFeatureSet> featureSets = sootFX.extractAllMethodFeatures();
 //        sootFX.printMultiSetToCSV(featureSets, "/Users/palaniappanmuthuraman/WorkSpace/SootFX/method_output.csv"); //path to output csv file
         WholeProgramFeatureSet wholeProgramFeatureSet = sootFX.extractAllWholeProgramFeatures();
         sootFX.printSingleSetToCSV(wholeProgramFeatureSet, "/Users/palaniappanmuthuraman/WorkSpace/SootFX/whole_output.csv");
+        long end = System.currentTimeMillis();
+        System.out.println((end - start) / 1000);
     }
 
     public static void logMeta(String path, long methodTime, long classTime, long wpTime, long fileSizeInBytes) throws IOException {
