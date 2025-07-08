@@ -13,6 +13,7 @@ import soot.*;
 import soot.jimple.infoflow.android.axml.AXmlAttribute;
 import soot.jimple.infoflow.android.axml.AXmlNode;
 import soot.jimple.infoflow.android.manifest.ProcessManifest;
+import soot.util.Chain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,6 +155,18 @@ public class FxUtil {
         allFeatures.add(manifestGroup);
 
         return allFeatures;
+    }
+
+    public static List<SootMethod> getEntryPoints(Chain<SootClass> sootClasses){
+        List<SootMethod> entryPoints = new ArrayList<>();
+        for(SootClass sootClass : sootClasses){
+            for(SootMethod sootMethod: sootClass.getMethods()){
+                if(sootMethod.isConcrete() && sootMethod.isPublic()){
+                    entryPoints.add(sootMethod);
+                }
+            }
+        }
+        return entryPoints;
     }
 
 }

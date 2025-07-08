@@ -79,7 +79,6 @@ public class WholeProgramFX implements SingleInstanceFX<WholeProgramFeatureSet, 
 
     private Optional<WholeProgramFEU> instantiateFeature(String featureName, List<FeatureResource> featureResources) {
         String className = "core.fx.wholeprogrambased." + featureName;
-        System.out.println("Trying to instantiate for " + className);
         try {
             Class<?> cls = Class.forName(className);
             Optional<FeatureResource> resource = featureResources.stream()

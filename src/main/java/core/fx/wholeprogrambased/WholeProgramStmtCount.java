@@ -15,18 +15,15 @@ import java.util.Set;
 Gives the number of statements present in the all the reachable methods
  */
 
-public class WholeProgramStmtCount implements WholeProgramFEU<Long> {
+public class WholeProgramStmtCount extends WholeProgramMethodBasedFEU<Long> {
 
     @Override
-    public Feature<Long> extract(CallGraph target) {
-        Iterator<Edge> iterator = target.iterator();
-        Set<SootMethod> methods = new HashSet<>();
-        while(iterator.hasNext()){
-            Edge edge = iterator.next();
-            methods.add(edge.src());
-            methods.add(edge.tgt());
-        }
-        long unitCount = methods.stream().filter(SootMethod::hasActiveBody).map(SootMethod::getActiveBody).map(Body::getUnits).count();
-        return new Feature<>(this.getClass().getSimpleName(), unitCount);
+    protected Feature<Long> extractWithMethods(CallGraph cg, Set<SootMethod> methods) {
+        long count = methods.stream()
+                .filter(SootMethod::hasActiveBody)
+                .map(SootMethod::getActiveBody)
+                .mapToLong(body -> body.getUnits().size())
+                .sum();
+        return new Feature<>(this.getClass().getSimpleName(), count);
     }
 }

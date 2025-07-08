@@ -16,18 +16,16 @@ import java.util.Set;
  Count of all the assign statements present in the all the reachable methods
  */
 
-public class WholeProgramAssignStmtCount implements WholeProgramFEU<Long> {
+public class WholeProgramAssignStmtCount extends WholeProgramMethodBasedFEU<Long> {
 
     @Override
-    public Feature<Long> extract(CallGraph target) {
-        Iterator<Edge> iterator = target.iterator();
-        Set<SootMethod> methods = new HashSet<>();
-        while(iterator.hasNext()){
-            Edge edge = iterator.next();
-            methods.add(edge.src());
-            methods.add(edge.tgt());
-        }
-        long unitCount = methods.stream().filter(SootMethod::hasActiveBody).map(SootMethod::getActiveBody).map(Body::getUnits).filter(u->u instanceof AssignStmt).count();
-        return new Feature<>(this.getClass().getSimpleName(), unitCount);
+    protected Feature<Long> extractWithMethods(CallGraph cg, Set<SootMethod> methods) {
+        long count = methods.stream()
+                .filter(SootMethod::hasActiveBody)
+                .map(SootMethod::getActiveBody)
+                .flatMap(body -> body.getUnits().stream())
+                .filter(unit -> unit instanceof AssignStmt)
+                .count();
+        return new Feature<>(this.getClass().getSimpleName(), count);
     }
 }

@@ -16,22 +16,11 @@ import java.util.stream.Stream;
 Gives all the count of the static methods present in the reachable methods from the call graph
  */
 
-public class WholeProgramStaticMethodCount implements WholeProgramFEU<Long> {
+public class WholeProgramStaticMethodCount extends WholeProgramMethodBasedFEU<Long> {
 
     @Override
-    public Feature<Long> extract(CallGraph target) {
-        Iterator<Edge> iterator = target.iterator();
-        Set<SootMethod> methods = new HashSet<>();
-        Stream<Edge> stream = Streams.stream(iterator);
-        stream.forEach(e-> {
-            if(e.src().isStatic()){
-                methods.add(e.src());
-            }
-            if(e.tgt().isStatic()){
-                methods.add(e.tgt());
-            }
-        });
-        long methodCount = methods.size();
-        return new Feature<>(this.getClass().getSimpleName(), methodCount);
+    protected Feature<Long> extractWithMethods(CallGraph cg, Set<SootMethod> methods) {
+        long count = methods.stream().filter(SootMethod::isStatic).count();
+        return new Feature<>(this.getClass().getSimpleName(), count);
     }
 }
