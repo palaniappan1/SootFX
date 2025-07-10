@@ -18,7 +18,7 @@ public class SootConnector {
         Options.v().set_include_all(true);
         Options.v().set_no_bodies_for_excluded(true);
         Options.v().set_allow_phantom_refs(true);
-        Options.v().set_soot_classpath(System.getProperty("java.home") + "/lib/rt.jar");
+        Options.v().set_soot_classpath(System.getProperty("java.home"));
         Options.v().set_src_prec(Options.src_prec_class);
         Options.v().set_process_dir(classPaths);
         Options.v().set_keep_line_number(true);
