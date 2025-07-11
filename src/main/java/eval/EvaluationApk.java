@@ -10,11 +10,11 @@ import java.util.concurrent.TimeUnit;
 
 public class EvaluationApk {
 
-    public static void main(String[] args) throws IOException {
-        for (int i = 1; i <= 7; i++) {
-            String apkName = "benign-" + i;
-            String path = "/Users/kadiray/Workspace/drebin/benign/" + apkName + ".apk";
-            String out = "/Users/kadiray/Workspace/SootFX/eval/apk-benign/" + apkName + "/";
+    private static String androidPlatforms = "/Users/palaniappanmuthuraman/WorkSpace/Archived/Evaluation/Evaluation_TaintBench/supporting_files/platforms";
+
+    public static void main(String[] args) {
+            String path = "/Users/palaniappanmuthuraman/WorkSpace/Archived/Evaluation/Evaluation_TaintBench/apks/playstore_apks/excel.apk";
+            String out = "/Users/palaniappanmuthuraman/WorkSpace/SootFX/whole_output.csv";
 
             try {
                 Stopwatch stopwatch = Stopwatch.createStarted();
@@ -34,10 +34,23 @@ public class EvaluationApk {
                 logMeta(out, methodDone, classDone - methodDone, wpDone - classDone, manifestDone - wpDone, new File(path).length());
             } catch (Exception e){
                 e.printStackTrace();
-                System.err.println("error in apk:" + apkName);
+                System.err.println("error in apk");
             }
-        }
+//        }
     }
+
+//    public static void main(String[] args) {
+//        String path = "/Users/palaniappanmuthuraman/WorkSpace/Archived/Evaluation/Evaluation_TaintBench/apks/playstore_apks/candycrush.apk";
+//        SootFX sootFX = new SootFX();
+//        sootFX.addClassPath(path);
+//        sootFX.appOnly();
+//        sootFX.androidJars(androidPlatforms);
+//        Set<WholeProgramFEU> objects = new HashSet<>();
+//        objects.add(new WholeProgramSourceCount());
+//        objects.add(new WholeProgramSinkCount());
+//        WholeProgramFeatureSet featureSet = sootFX.extractWholeProgramFeaturesInclude(objects);
+//        System.out.println(featureSet);
+//    }
 
     public static void logMeta(String path, long methodTime, long classTime, long wpTime, long manifestTime, long fileSizeInBytes) throws IOException {
         path += "meta.csv";
@@ -59,7 +72,7 @@ public class EvaluationApk {
         SootFX sootFX = new SootFX();
         sootFX.addClassPath(path);
         sootFX.appOnly();
-        sootFX.androidJars("/Users/kadiray/Library/Android/sdk/platforms");
+        sootFX.androidJars(androidPlatforms);
         Set<ClassFeatureSet> featureSets = sootFX.extractAllClassFeatures();
         sootFX.printMultiSetToCSV(featureSets, out + "class.csv");
     }
@@ -68,7 +81,7 @@ public class EvaluationApk {
         SootFX sootFX = new SootFX();
         sootFX.addClassPath(path);
         sootFX.appOnly();
-        sootFX.androidJars("/Users/kadiray/Library/Android/sdk/platforms");
+        sootFX.androidJars(androidPlatforms);
         Set<MethodFeatureSet> featureSets = sootFX.extractAllMethodFeatures();
         sootFX.printMultiSetToCSV(featureSets, out + "method.csv");
     }
@@ -77,7 +90,7 @@ public class EvaluationApk {
         SootFX sootFX = new SootFX();
         sootFX.addClassPath(path);
         sootFX.appOnly();
-        sootFX.androidJars("/Users/kadiray/Library/Android/sdk/platforms");
+        sootFX.androidJars(androidPlatforms);
         WholeProgramFeatureSet featureSet = sootFX.extractAllWholeProgramFeatures();
         sootFX.printSingleSetToCSV(featureSet, out + "wp.csv");
     }
@@ -86,7 +99,7 @@ public class EvaluationApk {
         SootFX sootFX = new SootFX();
         sootFX.addClassPath(path);
         sootFX.appOnly();
-        sootFX.androidJars("/Users/kadiray/Library/Android/sdk/platforms");
+        sootFX.androidJars(androidPlatforms);
         ManifestFeatureSet featureSet = sootFX.extractAllManifestFeatures();
         sootFX.printSingleSetToCSV(featureSet, out + "manifest.csv");
     }

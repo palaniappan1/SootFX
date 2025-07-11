@@ -44,8 +44,8 @@ public class CLI {
             throw new RuntimeException("usage: CLI \"path/to/app\" \"path/to/out\"");
         }else if(StringUtils.isEmpty(configPath)){
             // extract all features
-            methodFeatures(classPath, outPath, null, null);
-            classFeatures(classPath, outPath, null, null);
+            methodFeatures(classPath, outPath,androidJars, null, null);
+            classFeatures(classPath, outPath,androidJars, null, null);
             wpFeatures(classPath, outPath, androidJars,null, null, null);
 
             if(!StringUtils.isEmpty(androidJars) && classPath.endsWith(".apk")){
@@ -55,8 +55,8 @@ public class CLI {
         }else if(!StringUtils.isEmpty(configPath)){
             Config config = getConfig(configPath);
             List<FeatureResource> featureResources = config.getFeatureResources();
-            methodFeatures(classPath, outPath, config.getMethodFeatureInclusion(), config.getMethodFeatureExclusion());
-            classFeatures(classPath, outPath, config.getClassFeatureInclusion(), config.getClassFeatureExclusion());
+            methodFeatures(classPath, outPath, androidJars, config.getMethodFeatureInclusion(), config.getMethodFeatureExclusion());
+            classFeatures(classPath, outPath, androidJars, config.getClassFeatureInclusion(), config.getClassFeatureExclusion());
             wpFeatures(classPath, outPath, androidJars, config.getWholeProgFeatureInclusion(), config.getWholeProgFeatureExclusion(), featureResources);
             if(!StringUtils.isEmpty(androidJars) && classPath.endsWith(".apk")) {
                 manifestFeatures(classPath, outPath, androidJars, config.getManifestFeatureInclusion(), config.getManifestFeatureExclusion());
@@ -65,13 +65,11 @@ public class CLI {
     }
 
 
-    public static void methodFeatures(String path, String out, List<String> include, List<String> exclude) throws IOException {
-        if(include == null){
-            return;
-        }
+    public static void methodFeatures(String path, String out, String androidJars, List<String> include, List<String> exclude) throws IOException {
         SootFX sootFX = new SootFX();
         sootFX.addClassPath(path);
         sootFX.appOnly();
+        sootFX.androidJars(androidJars);
         Set<MethodFeatureSet> featureSets = null;
         if((include==null || include.isEmpty()) && (exclude==null || exclude.isEmpty())){
             featureSets = sootFX.extractAllMethodFeatures();
@@ -85,13 +83,11 @@ public class CLI {
         sootFX.printMultiSetToCSV(featureSets, out + "method.csv");
     }
 
-    public static void classFeatures(String path, String out, List<String> include, List<String> exclude) throws IOException {
-        if(include == null){
-            return;
-        }
+    public static void classFeatures(String path, String out, String androidJars, List<String> include, List<String> exclude) throws IOException {
         SootFX sootFX = new SootFX();
         sootFX.addClassPath(path);
         sootFX.appOnly();
+        sootFX.androidJars(androidJars);
         Set<ClassFeatureSet> featureSets = null;
         if((include==null || include.isEmpty()) && (exclude==null || exclude.isEmpty())){
             featureSets = sootFX.extractAllClassFeatures();
@@ -106,9 +102,6 @@ public class CLI {
     }
 
     public static void wpFeatures(String path, String out, String androidJars, List<String> include, List<String> exclude, List<FeatureResource> featureResources) throws IOException {
-        if(include == null){
-            return;
-        }
         SootFX sootFX = new SootFX();
         sootFX.addClassPath(path);
         sootFX.androidJars(androidJars);
@@ -127,9 +120,6 @@ public class CLI {
     }
 
     public static void manifestFeatures(String path, String out, String androidJars, List<String> include, List<String> exclude) throws IOException {
-        if(include == null){
-            return;
-        }
         SootFX sootFX = new SootFX();
         sootFX.addClassPath(path);
         sootFX.appOnly();

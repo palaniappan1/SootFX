@@ -35,8 +35,10 @@ public class SootFX {
     }
 
     public SootFX androidJars(String androidJars) {
-        this.androidJars = androidJars;
-        isAPK = true;
+        if(!androidJars.isEmpty()){
+            this.androidJars = androidJars;
+            isAPK = true;
+        }
         return this;
     }
 
