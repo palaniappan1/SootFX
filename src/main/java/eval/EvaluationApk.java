@@ -39,19 +39,6 @@ public class EvaluationApk {
 //        }
     }
 
-//    public static void main(String[] args) {
-//        String path = "/Users/palaniappanmuthuraman/WorkSpace/Archived/Evaluation/Evaluation_TaintBench/apks/playstore_apks/candycrush.apk";
-//        SootFX sootFX = new SootFX();
-//        sootFX.addClassPath(path);
-//        sootFX.appOnly();
-//        sootFX.androidJars(androidPlatforms);
-//        Set<WholeProgramFEU> objects = new HashSet<>();
-//        objects.add(new WholeProgramSourceCount());
-//        objects.add(new WholeProgramSinkCount());
-//        WholeProgramFeatureSet featureSet = sootFX.extractWholeProgramFeaturesInclude(objects);
-//        System.out.println(featureSet);
-//    }
-
     public static void logMeta(String path, long methodTime, long classTime, long wpTime, long manifestTime, long fileSizeInBytes) throws IOException {
         path += "meta.csv";
         File file = new File(path);
