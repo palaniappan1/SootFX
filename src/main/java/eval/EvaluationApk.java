@@ -13,30 +13,36 @@ public class EvaluationApk {
     private static String androidPlatforms = "/Users/palaniappanmuthuraman/WorkSpace/Archived/Evaluation/Evaluation_TaintBench/supporting_files/platforms";
 
     public static void main(String[] args) {
-            String path = "/Users/palaniappanmuthuraman/WorkSpace/Archived/Evaluation/Evaluation_TaintBench/apks/playstore_apks/excel.apk";
-            String out = "/Users/palaniappanmuthuraman/WorkSpace/SootFX/whole_output.csv";
+        long start = System.currentTimeMillis();
+//        String path = "/Users/palaniappanmuthuraman/WorkSpace/Archived/Evaluation/Evaluation_TaintBench/apks/droidbench_apks/ActivityCommunication1.apk";
+        String path = "/Users/palaniappanmuthuraman/WorkSpace/Archived/Evaluation/Evaluation_TaintBench/apks/playstore_apks/excel.apk";
+        String out = "/Users/palaniappanmuthuraman/WorkSpace/SootFX/whole_output.csv";
+        executeAll(path, out);
+        long end = System.currentTimeMillis();
+        System.out.println((end - start) / 1000);
+    }
 
-            try {
-                Stopwatch stopwatch = Stopwatch.createStarted();
+    public static void executeAll(String path, String out){
+        try {
+            Stopwatch stopwatch = Stopwatch.createStarted();
 
-                methodFeatures(path, out);
-                long methodDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+            methodFeatures(path, out);
+            long methodDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
-                classFeatures(path, out);
-                long classDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+            classFeatures(path, out);
+            long classDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
-                wpFeatures(path, out);
-                long wpDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+            wpFeatures(path, out);
+            long wpDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
-                manifestFeatures(path, out);
-                long manifestDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+            manifestFeatures(path, out);
+            long manifestDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
-                logMeta(out, methodDone, classDone - methodDone, wpDone - classDone, manifestDone - wpDone, new File(path).length());
-            } catch (Exception e){
-                e.printStackTrace();
-                System.err.println("error in apk");
-            }
-//        }
+            logMeta(out, methodDone, classDone - methodDone, wpDone - classDone, manifestDone - wpDone, new File(path).length());
+        } catch (Exception e){
+            e.printStackTrace();
+            System.err.println("error in apk");
+        }
     }
 
     public static void logMeta(String path, long methodTime, long classTime, long wpTime, long manifestTime, long fileSizeInBytes) throws IOException {
