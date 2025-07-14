@@ -13,8 +13,6 @@ public class ManifestConnector {
             manifest = new ProcessManifest(apkPath);
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (XmlPullParserException e) {
-            throw new RuntimeException(e);
         }
         return manifest;
     }

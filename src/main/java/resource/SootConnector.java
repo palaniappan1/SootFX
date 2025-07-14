@@ -1,24 +1,24 @@
 package resource;
 
-import application.CallGraphApplication;
-import config.CallGraphAlgorithm;
-import config.CallGraphConfig;
-import metrics.CallGraphMetricsWrapper;
 import org.apache.commons.lang3.StringUtils;
 import soot.G;
 import soot.Scene;
-import soot.jimple.infoflow.android.SetupApplication;
 import soot.jimple.toolkits.callgraph.CHATransformer;
-import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.options.Options;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
 public class SootConnector {
 
+    private static boolean isSootSceneCreated = false;
+
     public static void setupSoot(String mainClass, List<String> classPaths, boolean appOnly, String androidJars) {
+        if(isSootSceneCreated){
+            System.out.println("Soot scene already created, so reusing");
+            return;
+        }
+        System.out.println("Initliazing soot.....");
         G.reset();
         Options.v().set_prepend_classpath(true);
         Options.v().set_include_all(true);
@@ -52,19 +52,8 @@ public class SootConnector {
         opt.put("vta", "true");
         //opt.put("apponly","true");
         //SparkTransformer.v().transform("", opt);
-        // For an apk file, crating call graph is hard, so we utilize the QCG framework which in turn uses flowdroid to create the call graph
-        if (!StringUtils.isEmpty(androidJars)) {
-            CallGraphConfig instance = CallGraphConfig.getInstance();
-            instance.setCallGraphAlgorithm(CallGraphAlgorithm.CHA);
-            instance.setAppPath(classPaths.get(0));
-            instance.setIsSootSceneProvided(false);
-            CallGraphMetricsWrapper callGraphMetricsWrapper = CallGraphApplication.generateCallGraphFromPath(instance);
-            Scene.v().setCallGraph(callGraphMetricsWrapper.getCallGraph());
-        }
-        else{
-            // Load necessary classes is a time-consuming process, so it should happen only for the jar file. For an APK, the QCG framework takes care of it
-            Scene.v().loadNecessaryClasses();
-            CHATransformer.v().transform();
-        }
+        Scene.v().loadNecessaryClasses();
+        CHATransformer.v().transform();
+        isSootSceneCreated = true;
     }
 }

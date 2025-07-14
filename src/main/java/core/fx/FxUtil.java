@@ -169,4 +169,26 @@ public class FxUtil {
         return entryPoints;
     }
 
+    public static boolean isOverriden(SootMethod method){
+        if(method.isPrivate() || method.isStatic() || method.isFinal() || method.isConstructor()){ // Cannot be overriden
+            return false;
+        }
+
+        SootClass declaringClass = method.getDeclaringClass();
+        String subSignature = method.getSubSignature();
+        List<SootClass> subTypes;
+        if(declaringClass.isInterface()){
+            subTypes = Scene.v().getActiveHierarchy().getImplementersOf(declaringClass);
+        }
+        else{
+            subTypes = Scene.v().getActiveHierarchy().getSubclassesOf(declaringClass);
+        }
+        for(SootClass sootClass : subTypes){
+            if(sootClass.declaresMethod(subSignature)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
