@@ -4,11 +4,10 @@ import api.SootFX;
 import core.fx.FxUtil;
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
+import resource.APICallStats;
 import resource.SourceSinkIndex;
 import soot.SootMethod;
 import soot.Unit;
-import soot.jimple.InvokeExpr;
-import soot.jimple.InvokeStmt;
 import soot.jimple.Stmt;
 
 import java.io.IOException;
@@ -19,16 +18,6 @@ import java.util.Set;
 
 public abstract class MethodAPICount implements MethodFEU<Long> {
 
-    long numberOfCryptoCall;
-
-    long numberOfReflectiveCall;
-
-    long numberOfSourceStmts;
-
-    long numberOfSinkStmts;
-
-    long numberOfTryCatchBlocks;
-
     private static SourceSinkIndex sourceSinkIndex = null;
 
     public MethodAPICount(){
@@ -36,13 +25,9 @@ public abstract class MethodAPICount implements MethodFEU<Long> {
     }
 
     public void checkIndexLoad(){
-        String serPath;
-        if(SootFX.isAPK){
-            serPath = "src/main/resources/SourceAndSinksApk.ser";
-        }
-        else {
-            serPath = "src/main/resources/SourceAndSinksJar.ser";
-        }
+        String serPath = SootFX.isAPK
+                ? "src/main/resources/SourceAndSinksApk.ser"
+                : "src/main/resources/SourceAndSinksJar.ser";
         if (sourceSinkIndex == null) {
             sourceSinkIndex = loadIndex(serPath);
         }
@@ -67,41 +52,39 @@ public abstract class MethodAPICount implements MethodFEU<Long> {
 
     @Override
     public Feature<Long> extract(SootMethod target) {
-        resetCounters();
-        countAPICalls(target);
-        return extractCountFromMethod(target);
+        APICallStats stats = analyzeMethod(target);
+        return extractCountFromMethod(target, stats);
     }
 
-    public void resetCounters(){
-        this.numberOfCryptoCall = 0;
-        this.numberOfReflectiveCall = 0;
-        this.numberOfSourceStmts = 0;
-        this.numberOfSinkStmts = 0;
-        this.numberOfTryCatchBlocks = 0;
-    }
-
-    private void countAPICalls(SootMethod target) {
-        if(!target.hasActiveBody()) return;
-        checkIndexLoad();
+    private APICallStats analyzeMethod(SootMethod target) {
+        if(!target.hasActiveBody()) return new APICallStats(0,0,0,0,0);
+        long crypto = 0, reflection = 0, source = 0, sink = 0;
         for(Unit unit: target.getActiveBody().getUnits()){
             Stmt stmt = (Stmt) unit;
             if(stmt.containsInvokeExpr()){
+                String signature = stmt.getInvokeExpr().getMethod().getSignature();
                 if(FxUtil.isReflectiveCall(stmt.getInvokeExpr().getMethodRef())){
-                    numberOfReflectiveCall++;
+                    reflection++;
                 }
                 else if(FxUtil.isCryptoPackage(stmt.getInvokeExpr().getMethodRef().getDeclaringClass().getPackageName())){
-                    numberOfCryptoCall++;
+                    crypto++;
                 }
-                else if(getSourceSignatures().contains(stmt.getInvokeExpr().getMethod().getSignature())){
-                    numberOfSourceStmts++;
+                else if(getSourceSignatures().contains(signature)){
+                    System.out.println("Source API " + signature);
+                    source++;
                 }
-                else if(getSinkSignatures().contains(stmt.getInvokeExpr().getMethod().getSignature())){
-                    numberOfSinkStmts++;
+                else if(getSinkSignatures().contains(signature)){
+                    System.out.println("Sink API " + signature);
+                    sink++;
                 }
             }
         }
-        numberOfTryCatchBlocks = target.getActiveBody().getTraps().size();
+        int trap = target.getActiveBody().getTraps().size();
+        APICallStats apiCallStats = new APICallStats(crypto, reflection, source, sink, trap);
+        System.out.println("Target Method: " + target);
+        System.out.println(apiCallStats + "\n****");
+        return apiCallStats;
     }
 
-    public abstract Feature<Long> extractCountFromMethod(SootMethod method);
+    public abstract Feature<Long> extractCountFromMethod(SootMethod method, APICallStats stats);
 }
