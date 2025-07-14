@@ -23,10 +23,10 @@ public abstract class WholeProgramSourceSinkCount extends WholeProgramMethodBase
     public WholeProgramSourceSinkCount() {
         String serPath;
         if(SootFX.isAPK){
-            serPath = "src/main/resources/SourceAndSinks.ser";
+            serPath = "src/main/resources/SourceAndSinksApk.ser";
         }
         else {
-            serPath = "src/main/resources/SourceAndSinks.ser";
+            serPath = "src/main/resources/SourceAndSinksJar.ser";
         }
         if (sourceSinkIndex == null) {
             sourceSinkIndex = loadIndex(serPath);

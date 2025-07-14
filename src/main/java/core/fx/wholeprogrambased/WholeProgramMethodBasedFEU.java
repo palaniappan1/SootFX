@@ -42,18 +42,6 @@ public abstract class WholeProgramMethodBasedFEU<T> implements WholeProgramFEU<T
         return unit instanceof IfStmt || unit instanceof GotoStmt || unit instanceof SwitchStmt;
     }
 
-    protected boolean isReflectiveCall(SootMethodRef sootMethodRef){
-        String className = sootMethodRef.getDeclaringClass().getName();
-        String methodName = sootMethodRef.getName();
-        return (className.equals("java.lang.Class") && methodName.equals("forName")) ||
-                (className.equals("java.lang.reflect.Method") && methodName.equals("invoke")) ||
-                (className.equals("java.lang.reflect.Constructor") && methodName.equals("newInstance")) ||
-                (className.equals("java.lang.Class") && methodName.equals("getMethod")) ||
-                (className.equals("java.lang.Class") && methodName.equals("getDeclaredMethod")) ||
-                (className.equals("java.lang.Class") && methodName.equals("getField")) ||
-                (className.equals("java.lang.Class") && methodName.equals("getDeclaredField"));
-    }
-
     // Allow clearing the static cache if needed
     public static void resetCache() {
         cachedMethods = null;

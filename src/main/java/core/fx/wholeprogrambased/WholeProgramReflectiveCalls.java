@@ -1,5 +1,6 @@
 package core.fx.wholeprogrambased;
 
+import core.fx.FxUtil;
 import core.fx.base.Feature;
 import soot.SootMethod;
 import soot.SootMethodRef;
@@ -20,7 +21,7 @@ public class WholeProgramReflectiveCalls extends WholeProgramMethodBasedFEU<Long
                 .filter(unit -> unit instanceof InvokeStmt)
                 .map(unit -> ((InvokeStmt) unit).getInvokeExpr())
                 .map(InvokeExpr::getMethodRef)
-                .filter(this::isReflectiveCall)
+                .filter(FxUtil::isReflectiveCall)
                 .count();
         return new Feature<>(this.getClass().getSimpleName(), count);
     }

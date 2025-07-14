@@ -78,7 +78,7 @@ public class FxUtil {
     public static boolean isAppPackage(String name){
         return !name.startsWith("android.") && !name.startsWith("java.") && !name.startsWith("javax.") && !name.startsWith("dalvik.") && !name.startsWith("junit.") &&
                 !name.startsWith("org.apache") && !name.startsWith("org.json") && !name.startsWith("org.w3c") && !name.startsWith("org.xml")
-                && !name.startsWith("org.ietf.") && !name.startsWith("org.omg.") && !name.startsWith("sun.") && !name.startsWith("jdk.");
+                && !name.startsWith("org.ietf.") && !name.startsWith("org.omg.") && !name.startsWith("sun.") && !name.startsWith("jdk.") && !name.startsWith("androidx.");
     }
 
     public static boolean isLibPackage(String name){
@@ -189,6 +189,18 @@ public class FxUtil {
             }
         }
         return false;
+    }
+
+    public static boolean isReflectiveCall(SootMethodRef sootMethodRef){
+        String className = sootMethodRef.getDeclaringClass().getName();
+        String methodName = sootMethodRef.getName();
+        return (className.equals("java.lang.Class") && methodName.equals("forName")) ||
+                (className.equals("java.lang.reflect.Method") && methodName.equals("invoke")) ||
+                (className.equals("java.lang.reflect.Constructor") && methodName.equals("newInstance")) ||
+                (className.equals("java.lang.Class") && methodName.equals("getMethod")) ||
+                (className.equals("java.lang.Class") && methodName.equals("getDeclaredMethod")) ||
+                (className.equals("java.lang.Class") && methodName.equals("getField")) ||
+                (className.equals("java.lang.Class") && methodName.equals("getDeclaredField"));
     }
 
 }

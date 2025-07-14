@@ -8,7 +8,8 @@ import java.util.regex.Pattern;
 
 public class SourceSinkApkIndexer {
 
-    private static final Pattern LINE_PATTERN = Pattern.compile("^(<.*?>)\\s*->\\s*_(SOURCE|SINK)_$");
+    private static final Pattern LINE_PATTERN = Pattern.compile("^(<.*?>)(?:\\s+[\\w\\.]+)?\\s*->\\s*_(SOURCE|SINK)_$");
+
 
     public static void main(String[] args) {
 

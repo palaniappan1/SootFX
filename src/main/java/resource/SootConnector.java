@@ -6,19 +6,13 @@ import soot.Scene;
 import soot.jimple.toolkits.callgraph.CHATransformer;
 import soot.options.Options;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
 public class SootConnector {
 
-    private static boolean isSootSceneCreated = false;
-
     public static void setupSoot(String mainClass, List<String> classPaths, boolean appOnly, String androidJars) {
-        if(isSootSceneCreated){
-            System.out.println("Soot scene already created, so reusing");
-            return;
-        }
-        System.out.println("Initliazing soot.....");
         G.reset();
         Options.v().set_prepend_classpath(true);
         Options.v().set_include_all(true);
@@ -35,7 +29,8 @@ public class SootConnector {
             Options.v().set_keep_offset(false);
             Options.v().set_process_multiple_dex(true);
             Options.v().set_android_jars(androidJars);
-//            Options.v().set_soot_classpath(androidJars + File.separatorChar + "android-" + 32 + File.separatorChar + "android.jar");
+            Options.v().set_app(true);
+            Options.v().set_soot_classpath(androidJars + File.separatorChar + "android-" + 32 + File.separatorChar + "android.jar");
         } else {
             Options.v().set_soot_classpath(System.getProperty("java.home"));
             Options.v().set_src_prec(Options.src_prec_class);
@@ -46,14 +41,12 @@ public class SootConnector {
         }
         //SootMethod mainMethod = Scene.v().getMainMethod();
         //Scene.v().setEntryPoints(Collections.singletonList(mainMethod));
-
+        Scene.v().loadNecessaryClasses();
         HashMap opt = new HashMap();
         opt.put("enabled", "true");
         opt.put("vta", "true");
         //opt.put("apponly","true");
         //SparkTransformer.v().transform("", opt);
-        Scene.v().loadNecessaryClasses();
         CHATransformer.v().transform();
-        isSootSceneCreated = true;
     }
 }
