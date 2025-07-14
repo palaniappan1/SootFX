@@ -1,1 +1,3 @@
-mvn install:install-file -Dfile=./soot-infoflow-android-2.5.1.jar -DgroupId=de.tud.sse -DartifactId=soot-infoflow-android -Dversion=2.5.1 -Dpackaging=jar -DgeneratePom=true
+#mvn install:install-file -Dfile=./soot-infoflow-android-2.5.1.jar -DgroupId=de.tud.sse -DartifactId=soot-infoflow-android -Dversion=2.5.1 -Dpackaging=jar -DgeneratePom=true
+#mvn install:install-file -Dfile=./soot-infoflow-cmd-jar-with-dependencies.jar -DgroupId=de.tud.sse -DartifactId=soot-infoflow-cmd -Dversion=2.15.0-SNAPSHOT -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=./callgraph-1.2-SNAPSHOT-jar-with-dependencies.jar -DgroupId=com.example.pal -DartifactId=callgraph -Dversion=1.2-SNAPSHOT -Dpackaging=jar -DgeneratePom=true
