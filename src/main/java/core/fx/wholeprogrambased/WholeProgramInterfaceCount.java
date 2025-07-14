@@ -8,6 +8,7 @@ import soot.SootMethod;
 import soot.jimple.toolkits.callgraph.CallGraph;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /*
 Count the number of interfaces referenced by methods in the call graph
@@ -18,7 +19,7 @@ public class WholeProgramInterfaceCount extends WholeProgramMethodBasedFEU<Long>
 
     @Override
     protected Feature<Long> extractWithMethods(CallGraph cg, Set<SootMethod> methods) {
-        long count = methods.stream().map(SootMethod::getDeclaringClass).distinct().filter(SootClass::isInterface).count();
-        return new Feature<>(this.getClass().getSimpleName(), count);
+        Set<SootClass> interfaces = methods.stream().map(SootMethod::getDeclaringClass).distinct().filter(SootClass::isInterface).collect(Collectors.toSet());
+        return new Feature<>(this.getClass().getSimpleName(), (long) interfaces.size());
     }
 }

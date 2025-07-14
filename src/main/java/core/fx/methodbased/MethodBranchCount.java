@@ -9,7 +9,7 @@ public class MethodBranchCount implements MethodFEU<Long> {
 
     @Override
     public Feature<Long> extract(SootMethod method) {
-        Long count = -1l;
+        long count = -1L;
 
         if(method.hasActiveBody()){
             count = method.getActiveBody().getUnits().stream().filter(Unit::branches).count();
