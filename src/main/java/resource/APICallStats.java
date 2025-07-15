@@ -1,9 +1,9 @@
 package resource;
 
 public class APICallStats {
-    long crypto; long reflection; long source; long sink; long traps;
+    boolean crypto; boolean reflection; boolean source; boolean sink; boolean traps;
 
-    public APICallStats(long crypto, long reflection, long source, long sink, long traps){
+    public APICallStats(boolean crypto, boolean reflection, boolean source, boolean sink, boolean traps){
         this.crypto = crypto;
         this.reflection = reflection;
         this.sink = sink;
@@ -11,23 +11,23 @@ public class APICallStats {
         this.traps = traps;
     }
 
-    public long getCrypto() {
+    public boolean getCrypto() {
         return crypto;
     }
 
-    public long getReflection() {
+    public boolean getReflection() {
         return reflection;
     }
 
-    public long getSink() {
+    public boolean getSink() {
         return sink;
     }
 
-    public long getSource() {
+    public boolean getSource() {
         return source;
     }
 
-    public long getTraps() {
+    public boolean getTraps() {
         return traps;
     }
 

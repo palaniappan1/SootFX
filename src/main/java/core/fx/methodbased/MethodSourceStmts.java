@@ -7,9 +7,7 @@ import soot.SootMethod;
 public class MethodSourceStmts extends MethodAPICount {
 
     @Override
-    public Feature<Long> extractCountFromMethod(SootMethod method, APICallStats stats) {
-        System.out.println("Source Stmt count called for method " + method + " with the stats as " + stats);
-        System.out.println("Value we have for source is " + stats.getSource());
+    public Feature<Boolean> extractCountFromMethod(SootMethod method, APICallStats stats) {
         return new Feature<>(this.getClass().getSimpleName(), stats.getSource());
     }
 }

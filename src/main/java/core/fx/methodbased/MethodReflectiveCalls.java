@@ -6,7 +6,7 @@ import soot.SootMethod;
 
 public class MethodReflectiveCalls extends MethodAPICount{
     @Override
-    public Feature<Long> extractCountFromMethod(SootMethod method, APICallStats stats) {
+    public Feature<Boolean> extractCountFromMethod(SootMethod method, APICallStats stats) {
         return new Feature<>(this.getClass().getSimpleName(), stats.getReflection());
     }
 }

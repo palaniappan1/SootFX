@@ -2,6 +2,7 @@ package resource;
 
 import org.apache.commons.lang3.StringUtils;
 import soot.G;
+import soot.PackManager;
 import soot.Scene;
 import soot.jimple.toolkits.callgraph.CHATransformer;
 import soot.options.Options;
@@ -25,10 +26,12 @@ public class SootConnector {
         Options.v().setPhaseOption("cg.spark", "string-constants:true");
         Options.v().set_app(appOnly);
         if (!StringUtils.isEmpty(androidJars)) {
+            System.out.println("Instrumenting android apks....");
             Options.v().set_src_prec(Options.src_prec_apk);
             Options.v().set_keep_offset(false);
             Options.v().set_process_multiple_dex(true);
             Options.v().set_android_jars(androidJars);
+            Options.v().set_force_android_jar(androidJars+ File.separatorChar + "android-" + 30 + File.separatorChar + "android.jar" );
 //            Options.v().set_soot_classpath(androidJars + File.separatorChar + "android-" + 32 + File.separatorChar + "android.jar");
         } else {
             Options.v().set_soot_classpath(System.getProperty("java.home"));
@@ -38,12 +41,14 @@ public class SootConnector {
         if (mainClass != null) {
             Options.v().set_main_class(mainClass);
         }
+        System.out.println("Soot class path " + Scene.v().getSootClassPath());
         //SootMethod mainMethod = Scene.v().getMainMethod();
         //Scene.v().setEntryPoints(Collections.singletonList(mainMethod));
         Scene.v().loadNecessaryClasses();
         HashMap opt = new HashMap();
         opt.put("enabled", "true");
         opt.put("vta", "true");
+        PackManager.v().getPack("wjpp").apply();
         //opt.put("apponly","true");
         //SparkTransformer.v().transform("", opt);
         CHATransformer.v().transform();
