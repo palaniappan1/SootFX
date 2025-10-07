@@ -12,10 +12,10 @@ public class EvaluationApk {
 
     private static String androidPlatforms = "/Users/palaniappanmuthuraman/WorkSpace/Archived/Evaluation/Evaluation_TaintBench/supporting_files/platforms";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         long start = System.currentTimeMillis();
-//        String path = "/Users/palaniappanmuthuraman/WorkSpace/Archived/Evaluation/Evaluation_TaintBench/apks/droidbench_apks/ActivityCommunication1.apk";
-        String path = "/Users/palaniappanmuthuraman/WorkSpace/Archived/Evaluation/Evaluation_TaintBench/apks/playstore_apks/excel.apk";
+        String path = "/Users/palaniappanmuthuraman/WorkSpace/Archived/Evaluation/Evaluation_TaintBench/apks/droidbench_apks/ActivityCommunication1.apk";
+//        String path = "/Users/palaniappanmuthuraman/WorkSpace/Archived/Evaluation/Evaluation_TaintBench/apks/playstore_apks/excel.apk";
         String out = "/Users/palaniappanmuthuraman/WorkSpace/SootFX/whole_output.csv";
         executeAll(path, out);
         long end = System.currentTimeMillis();

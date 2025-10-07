@@ -10,6 +10,8 @@ import resource.SootConnector;
 import core.fx.base.*;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
 
 public class SootFX {
@@ -189,28 +191,33 @@ public class SootFX {
     public void printMultiSetToCSV(Set<? extends AbstractFeatureSet> set, String path) throws IOException {
         boolean isFirst = true;
         File file = new File(path);
-        if(file.getParentFile()!=null){
-            file.getParentFile().mkdirs();
+        File parent = file.getParentFile();
+        if(parent != null && !parent.exists()){
+            if(!parent.mkdirs()){
+                throw new IOException("Failed to create directories: " + parent.getAbsolutePath());
+            }
         }
-        file.createNewFile();
-        try (OutputStream out = new FileOutputStream(file);
-             Writer writer = new OutputStreamWriter(out, "UTF-8")) {
+        try (OutputStream out = Files.newOutputStream(file.toPath());
+             Writer writer = new OutputStreamWriter(out, StandardCharsets.UTF_8)) {
             for (AbstractFeatureSet featureSet : set) {
                 String instanceName = featureSet.getSignature();
                 if (isFirst) {
                     writer.append("name;");
                     for (Feature feature : featureSet.getFeatures()) {
-                        writer.append(feature.getName() + ";");
+                        writer.append(feature.getName()).append(";");
                     }
                     writer.append(System.lineSeparator());
                     isFirst = false;
                 }
-                writer.append(instanceName + ";");
+                writer.append(instanceName).append(";");
                 for (Feature feature : featureSet.getFeatures()) {
-                    writer.append(feature.getValue().toString() + ";");
+                    writer.append(feature.getValue().toString()).append(";");
                 }
                 writer.append(System.lineSeparator());
             }
+        }
+        catch (Exception exception){
+            exception.printStackTrace();
         }
     }
 

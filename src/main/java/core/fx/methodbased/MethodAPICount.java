@@ -12,6 +12,7 @@ import soot.Unit;
 import soot.jimple.Stmt;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -31,19 +32,27 @@ public abstract class MethodAPICount implements MethodFEU<Boolean> {
 
     public void checkIndexLoad(){
         String serPath = SootFX.isAPK
-                ? "src/main/resources/SourceAndSinksApk.ser"
-                : "src/main/resources/SourceAndSinksJar.ser";
+                ? "SourceAndSinksApk.ser"
+                : "SourceAndSinksJar.ser";
         if (sourceSinkIndex == null) {
             sourceSinkIndex = loadIndex(serPath);
         }
     }
 
     private SourceSinkIndex loadIndex(String path) {
-        try (ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(Paths.get(path)))) {
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream(path);
+             ObjectInputStream ois = new ObjectInputStream(in)) {
+
+            if (in == null) {
+                System.err.println("Failed to load resource: " + path);
+                return new SourceSinkIndex(); // Fallback to empty
+            }
+
             return (SourceSinkIndex) ois.readObject();
+
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-            return new SourceSinkIndex(); // Empty index if failed
+            return new SourceSinkIndex(); // Fallback to empty
         }
     }
 
@@ -59,7 +68,6 @@ public abstract class MethodAPICount implements MethodFEU<Boolean> {
     public Feature<Boolean> extract(SootMethod target) {
         String key = target.getDeclaringClass().getName() + ":" + target.getSubSignature();
         APICallStats stats = sharedStatsCache.computeIfAbsent(key, k -> {
-            System.out.println("Value not present, so computing fresh for the target " + target + " and this method has active body: " + target.hasActiveBody());
             return analyzeMethod(target);
         });
         return extractCountFromMethod(target, stats);
@@ -79,11 +87,9 @@ public abstract class MethodAPICount implements MethodFEU<Boolean> {
                     crypto = true;
                 }
                 else if(getSourceSignatures().contains(signature)){
-                    System.out.println("Source API " + target);
                     source = true;
                 }
                 else if(getSinkSignatures().contains(signature)){
-                    System.out.println("Sink API " + target);
                     sink = true;
                 }
             }

@@ -12,6 +12,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -80,7 +82,9 @@ public class CLI {
         }else if(!include.isEmpty() && !exclude.isEmpty()){
             throw new RuntimeException("You must either provide methodFeatureInclusion or methodFeatureExclusion in config.yaml. \n Inclusion list only extracts the selected features. Exclusion list extracts all but the selected features.");
         }
-        sootFX.printMultiSetToCSV(featureSets, out + "method.csv");
+        Path outputFilePath = Paths.get(out, "method.csv");
+        System.out.println("Method Features output path:" + outputFilePath);
+        sootFX.printMultiSetToCSV(featureSets, outputFilePath.toString());
     }
 
     public static void classFeatures(String path, String out, String androidJars, List<String> include, List<String> exclude) throws IOException {
@@ -98,7 +102,9 @@ public class CLI {
         }else if(!include.isEmpty() && !exclude.isEmpty()){
             throw new RuntimeException("You must either provide classFeatureInclusion or classFeatureExclusion in config.yaml. \n Inclusion list only extracts the selected features. Exclusion list extracts all but the selected features.");
         }
-        sootFX.printMultiSetToCSV(featureSets, out + "class.csv");
+        Path outputFilePath = Paths.get(out, "class.csv");
+        System.out.println("Class Features output path:" + outputFilePath);
+        sootFX.printMultiSetToCSV(featureSets, outputFilePath.toString());
     }
 
     public static void wpFeatures(String path, String out, String androidJars, List<String> include, List<String> exclude, List<FeatureResource> featureResources) throws IOException {
@@ -116,7 +122,9 @@ public class CLI {
         }else if(!include.isEmpty() && !exclude.isEmpty()){
             throw new RuntimeException("You must either provide wholeProgFeatureInclusion or wholeProgFeatureExclusion  in config.yaml. \n Inclusion list only extracts the selected features. Exclusion list extracts all but the selected features.");
         }
-        sootFX.printSingleSetToCSV(featureSet, out + "wp.csv");
+        Path outputFilePath = Paths.get(out, "wp.csv");
+        System.out.println("Whole Program Features output path:" + outputFilePath);
+        sootFX.printSingleSetToCSV(featureSet, outputFilePath.toString());
     }
 
     public static void manifestFeatures(String path, String out, String androidJars, List<String> include, List<String> exclude) throws IOException {
@@ -134,7 +142,9 @@ public class CLI {
         } else if(!include.isEmpty() && !exclude.isEmpty()){
             throw new RuntimeException("You must either provide manifestFeatureInclusion or manifestFeatureExclusion in config.yaml. \n Inclusion list only extracts the selected features. Exclusion list extracts all but the selected features.");
         }
-        sootFX.printSingleSetToCSV(featureSet, out + "manifest.csv");
+        Path outputFilePath = Paths.get(out, "manifest.csv");
+        System.out.println("Manifest Features output path:" + outputFilePath);
+        sootFX.printSingleSetToCSV(featureSet, outputFilePath.toString());
     }
 
     public static Config getConfig(String configPath) throws FileNotFoundException {
