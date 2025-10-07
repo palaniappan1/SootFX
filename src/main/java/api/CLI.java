@@ -58,9 +58,9 @@ public class CLI {
         }else if(!StringUtils.isEmpty(configPath)){
             Config config = getConfig(configPath);
             List<FeatureResource> featureResources = config.getFeatureResources();
-            methodFeatures(classPath, outPath, androidJars, config.getMethodFeatureInclusion(), config.getMethodFeatureExclusion());
             classFeatures(classPath, outPath, androidJars, config.getClassFeatureInclusion(), config.getClassFeatureExclusion());
             wpFeatures(classPath, outPath, androidJars, config.getWholeProgFeatureInclusion(), config.getWholeProgFeatureExclusion(), featureResources);
+            methodFeatures(classPath, outPath, androidJars, config.getMethodFeatureInclusion(), config.getMethodFeatureExclusion());
             if(!StringUtils.isEmpty(androidJars) && classPath.endsWith(".apk")) {
                 manifestFeatures(classPath, outPath, androidJars, config.getManifestFeatureInclusion(), config.getManifestFeatureExclusion());
             }
