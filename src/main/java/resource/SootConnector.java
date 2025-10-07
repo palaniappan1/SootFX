@@ -24,6 +24,7 @@ public class SootConnector {
         // set spark options for construct call graphs
         Options.v().setPhaseOption("cg.spark", "on");
         Options.v().setPhaseOption("cg.spark", "string-constants:true");
+        Options.v().set_whole_program(true);
         Options.v().set_app(appOnly);
         if (!StringUtils.isEmpty(androidJars)) {
             Options.v().set_src_prec(Options.src_prec_apk);
@@ -31,7 +32,7 @@ public class SootConnector {
             Options.v().set_process_multiple_dex(true);
             Options.v().set_android_jars(androidJars);
             Options.v().set_force_android_jar(androidJars+ File.separatorChar + "android-" + 32 + File.separatorChar + "android.jar" );
-//            Options.v().set_soot_classpath(androidJars + File.separatorChar + "android-" + 32 + File.separatorChar + "android.jar");
+            Options.v().set_soot_classpath(androidJars + File.separatorChar + "android-" + 32 + File.separatorChar + "android.jar");
         } else {
             Options.v().set_soot_classpath(System.getProperty("java.home"));
             Options.v().set_src_prec(Options.src_prec_class);
