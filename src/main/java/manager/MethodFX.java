@@ -41,6 +41,9 @@ public class MethodFX implements MultiInstanceFX<MethodFeatureSet, MethodFEU> {
             methods.add(edge.tgt());
         }*/
         for(SootMethod method: methods){
+            if(method.isConcrete()){
+                method.retrieveActiveBody();
+            }
             methodFeatureSets.add(extractMethodFeature(method, featureExtractors));
         }
         return methodFeatureSets;
