@@ -3,7 +3,7 @@ package core.fx.methodbased;
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
 import org.apache.commons.lang3.StringUtils;
-import soot.SootMethod;
+import sootup.core.model.SootMethod;
 
 public class MethodReturnTypeContainsName implements MethodFEU<Boolean> {
 

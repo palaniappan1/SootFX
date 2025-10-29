@@ -12,13 +12,16 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sootup.version>2.0.0</sootup.version>
     </properties>
 
     <build>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
+                <version>3.14.1</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -49,18 +52,33 @@
     <dependencies>
         <dependency>
             <groupId>org.soot-oss</groupId>
-            <artifactId>soot</artifactId>
-            <version>4.4.1</version>
+            <artifactId>sootup.core</artifactId>
+            <version>${sootup.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.soot-oss</groupId>
+            <artifactId>sootup.callgraph</artifactId>
+            <version>${sootup.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.soot-oss</groupId>
+            <artifactId>sootup.apk.frontend</artifactId>
+            <version>${sootup.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.soot-oss</groupId>
+            <artifactId>sootup.java.bytecode.frontend</artifactId>
+            <version>${sootup.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>net.sf.py4j</groupId>
             <artifactId>py4j</artifactId>
             <version>0.10.9.2</version>
-        </dependency>
-        <dependency>
-            <groupId>de.tud.sse</groupId>
-            <artifactId>soot-infoflow-android</artifactId>
-            <version>2.5.1</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>

@@ -2,7 +2,7 @@ package core.fx.methodbased;
 
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
-import soot.SootMethod;
+import sootup.core.model.SootMethod;
 
 public class MethodReturnsVoid implements MethodFEU<Boolean> {
     @Override

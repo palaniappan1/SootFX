@@ -3,11 +3,14 @@ package core.fx.methodbased;
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
 import org.apache.commons.lang3.StringUtils;
-import soot.Body;
-import soot.SootMethod;
-import soot.Unit;
-import soot.jimple.InvokeExpr;
-import soot.jimple.Stmt;
+import org.jspecify.annotations.NonNull;
+import sootup.core.jimple.common.expr.AbstractInvokeExpr;
+import sootup.core.jimple.common.stmt.InvokableStmt;
+import sootup.core.jimple.common.stmt.Stmt;
+import sootup.core.model.Body;
+import sootup.core.model.SootMethod;
+import sootup.core.views.View;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +19,16 @@ public class MethodCallsMethod implements MethodFEU<Boolean> {
 
     private String className;
     private String methodName;
-
+    @NonNull
+    private View view;
 
     public MethodCallsMethod(String className, String methodName) {
         this.className = className;
         this.methodName = methodName;
+    }
+
+    public MethodCallsMethod(View view) {
+        this.view = view;
     }
 
     @Override
@@ -40,20 +48,17 @@ public class MethodCallsMethod implements MethodFEU<Boolean> {
         doneList.add(method);
 
         try {
-            Body body = method.getActiveBody();
-            for (Unit u : body.getUnits()) {
-                if (!(u instanceof Stmt))
-                    continue;
-                Stmt stmt = (Stmt) u;
-                if (!stmt.containsInvokeExpr())
+            Body body = method.getBody();
+            for (Stmt u : body.getStmts()) {
+                if (!(u instanceof InvokableStmt && ((InvokableStmt) u).getInvokeExpr().isPresent()))
                     continue;
 
-                InvokeExpr inv = stmt.getInvokeExpr();
-                if (StringUtils.startsWithIgnoreCase(inv.getMethod().getName(), this.methodName)) {
+                AbstractInvokeExpr inv = ((InvokableStmt) u).getInvokeExpr().get();
+                if (StringUtils.startsWithIgnoreCase(inv.getMethodSignature().getName(), this.methodName)) {
                     if (this.className.isEmpty() || this.className
-                            .equals(inv.getMethod().getDeclaringClass().getName()))
+                            .equals(inv.getMethodSignature().getDeclClassType().getClassName()))
                         return true;
-                } else if (checkMethod(inv.getMethod(), doneList) == true)
+                } else if (checkMethod(this.view.getMethod(inv.getMethodSignature()).get(), doneList))
                     return true;
             }
             return false;

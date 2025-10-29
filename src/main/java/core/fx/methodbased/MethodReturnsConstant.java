@@ -2,11 +2,11 @@ package core.fx.methodbased;
 
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
-import soot.Body;
-import soot.SootMethod;
-import soot.Unit;
-import soot.jimple.Constant;
-import soot.jimple.ReturnStmt;
+import sootup.core.jimple.common.constant.Constant;
+import sootup.core.jimple.common.stmt.JReturnStmt;
+import sootup.core.jimple.common.stmt.Stmt;
+import sootup.core.model.Body;
+import sootup.core.model.SootMethod;
 
 public class MethodReturnsConstant implements MethodFEU<Boolean> {
 
@@ -14,11 +14,11 @@ public class MethodReturnsConstant implements MethodFEU<Boolean> {
     public Feature<Boolean> extract(SootMethod target) {
         boolean constant = false;
 
-        if (target.hasActiveBody()) {
-            Body body = target.getActiveBody();
-            for(Unit u: body.getUnits()){
-                if(u instanceof ReturnStmt){
-                    ReturnStmt ret = (ReturnStmt) u;
+        if (target.hasBody()) {
+            Body body = target.getBody();
+            for(Stmt u: body.getStmts()){
+                if(u instanceof JReturnStmt){
+                    JReturnStmt ret = (JReturnStmt) u;
                     if(ret.getOp() instanceof Constant){
                         constant = true;
                         break;

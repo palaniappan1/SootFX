@@ -1,7 +1,7 @@
 package core.rm;
 
-import soot.SootMethod;
 import java.util.TreeSet;
+import sootup.core.model.SootMethod;
 
 public class MethodFeatureSet extends AbstractFeatureSet {
 
@@ -14,7 +14,7 @@ public class MethodFeatureSet extends AbstractFeatureSet {
 
     @Override
     public String getSignature() {
-        return sootMethod.getSignature();
+        return sootMethod.getSignature().toString();
     }
 
     public SootMethod getMethod(){

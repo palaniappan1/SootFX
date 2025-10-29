@@ -2,8 +2,8 @@ package core.fx.methodbased;
 
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
-import soot.SootMethod;
-import soot.Unit;
+import sootup.core.jimple.common.stmt.Stmt;
+import sootup.core.model.SootMethod;
 
 public class MethodBranchCount implements MethodFEU<Long> {
 
@@ -11,8 +11,8 @@ public class MethodBranchCount implements MethodFEU<Long> {
     public Feature<Long> extract(SootMethod method) {
         Long count = -1l;
 
-        if(method.hasActiveBody()){
-            count = method.getActiveBody().getUnits().stream().filter(Unit::branches).count();
+        if(method.hasBody()){
+            count = method.getBody().getStmts().stream().filter(Stmt::branches).count();
         }
         return new Feature<>(getName(), count);
     }

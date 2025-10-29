@@ -12,5 +12,4 @@ public interface FeatureExtractionUnit<V,T> {
     }
 
     Feature<V> extract(T target);
-
 }

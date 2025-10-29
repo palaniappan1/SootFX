@@ -2,10 +2,14 @@ package core.fx.methodbased;
 
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
-import soot.SootMethod;
-import soot.Unit;
-import soot.Value;
-import soot.jimple.*;
+import sootup.core.jimple.basic.Value;
+import sootup.core.jimple.common.expr.AbstractInvokeExpr;
+import sootup.core.jimple.common.ref.JParameterRef;
+import sootup.core.jimple.common.stmt.InvokableStmt;
+import sootup.core.jimple.common.stmt.JAssignStmt;
+import sootup.core.jimple.common.stmt.JIdentityStmt;
+import sootup.core.jimple.common.stmt.Stmt;
+import sootup.core.model.SootMethod;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,17 +27,17 @@ public class MethodParamFlowsToMethod implements MethodFEU<Boolean> {
     public Feature<Boolean> extract(SootMethod target) {
         if (target.isConcrete()) {
             Set<Value> paramVals = new HashSet<Value>();
-            for (Unit u : target.retrieveActiveBody().getUnits()) {
+            for (Stmt u : target.getBody().getStmts()) {
                 // Collect the parameters
-                if (u instanceof IdentityStmt) {
-                    IdentityStmt id = (IdentityStmt) u;
-                    if (id.getRightOp() instanceof ParameterRef)
+                if (u instanceof JIdentityStmt) {
+                    JIdentityStmt id = (JIdentityStmt) u;
+                    if (id.getRightOp() instanceof JParameterRef)
                         paramVals.add(id.getLeftOp());
                 }
 
-                if (u instanceof AssignStmt) {
-                    Value leftOp = ((AssignStmt) u).getLeftOp();
-                    Value rightOp = ((AssignStmt) u).getRightOp();
+                if (u instanceof JAssignStmt) {
+                    Value leftOp = ((JAssignStmt) u).getLeftOp();
+                    Value rightOp = ((JAssignStmt) u).getRightOp();
                     if (paramVals.contains(leftOp)) paramVals.remove(leftOp);
                     if (paramVals.contains(rightOp)) {
                         paramVals.add(leftOp);
@@ -41,9 +45,9 @@ public class MethodParamFlowsToMethod implements MethodFEU<Boolean> {
                 }
 
                 // Check for invocations
-                if (((Stmt) u).containsInvokeExpr()) {
-                    InvokeExpr invokeExpr = ((Stmt) u).getInvokeExpr();
-                    if (invokeExpr.getMethod().getName().toLowerCase()
+                if (u instanceof InvokableStmt && ((InvokableStmt) u).getInvokeExpr().isPresent()) {
+                    AbstractInvokeExpr invokeExpr = ((InvokableStmt) u).getInvokeExpr().get();
+                    if (invokeExpr.getMethodSignature().getName().toLowerCase()
                             .contains(value.toLowerCase())) {
                         for (Value arg : invokeExpr.getArgs()) {
                             if (paramVals.contains(arg)) {

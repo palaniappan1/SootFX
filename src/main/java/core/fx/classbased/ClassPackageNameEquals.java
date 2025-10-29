@@ -3,7 +3,7 @@ package core.fx.classbased;
 import core.fx.base.ClassFEU;
 import core.fx.base.Feature;
 import org.apache.commons.lang3.StringUtils;
-import soot.SootClass;
+import sootup.core.model.SootClass;
 
 public class ClassPackageNameEquals implements ClassFEU<Boolean> {
 
@@ -15,6 +15,6 @@ public class ClassPackageNameEquals implements ClassFEU<Boolean> {
 
     @Override
     public Feature<Boolean> extract(SootClass target) {
-        return new Feature<>(getName(value), StringUtils.equalsIgnoreCase(target.getPackageName(), value));
+        return new Feature<>(getName(value), StringUtils.equalsIgnoreCase(target.getName(), value));
     }
 }

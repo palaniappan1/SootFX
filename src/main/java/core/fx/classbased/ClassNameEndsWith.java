@@ -3,7 +3,7 @@ package core.fx.classbased;
 import core.fx.base.ClassFEU;
 import core.fx.base.Feature;
 import org.apache.commons.lang3.StringUtils;
-import soot.SootClass;
+import sootup.core.model.SootClass;
 
 public class ClassNameEndsWith implements ClassFEU<Boolean> {
 

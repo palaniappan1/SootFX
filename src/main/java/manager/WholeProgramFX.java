@@ -5,8 +5,10 @@ import api.FeatureResource;
 import core.fx.FxUtil;
 import core.fx.base.WholeProgramFEU;
 import core.rm.WholeProgramFeatureSet;
-import soot.Scene;
-import soot.jimple.toolkits.callgraph.CallGraph;
+import org.jspecify.annotations.NonNull;
+import sootup.callgraph.CallGraph;
+import sootup.callgraph.ClassHierarchyAnalysisAlgorithm;
+import sootup.core.views.View;
 
 import java.util.HashSet;
 import java.util.List;
@@ -16,10 +18,21 @@ import java.util.stream.Collectors;
 
 public class WholeProgramFX implements SingleInstanceFX<WholeProgramFeatureSet, WholeProgramFEU> {
 
+    private static final Set<String> NEED_VIEW = new HashSet<>(Set.of("WholeProgramAllAppMethodCount",
+            "WholeProgramAppMethodCount", "WholeProgramAssignStmtCount", "WholeProgramContainsAPICall",
+            "WholeProgramJavaLibMethodCount", "WholeProgramStaticMethodCount", "WholeProgramStmtCount"));
+
+    @NonNull
+    private final View view;
+
+    public WholeProgramFX(View view) {
+        this.view = view;
+    }
+
     @Override
     public WholeProgramFeatureSet getFeatures(Set<WholeProgramFEU> featureExtractors) {
         WholeProgramFeatureSet wholeProgramFeature = new WholeProgramFeatureSet();
-        CallGraph cg = Scene.v().getCallGraph();
+        CallGraph cg = new ClassHierarchyAnalysisAlgorithm(view).initialize();
         for (WholeProgramFEU<?> featureExtractor : featureExtractors) {
             wholeProgramFeature.addFeature(featureExtractor.extract(cg));
         }
@@ -49,7 +62,11 @@ public class WholeProgramFX implements SingleInstanceFX<WholeProgramFeatureSet, 
             WholeProgramFEU newInstance = null;
             try {
                 cls = Class.forName("core.fx.wholeprogrambased." + str);
-                newInstance = (WholeProgramFEU) cls.newInstance();
+                if(NEED_VIEW.stream().anyMatch(s -> s.equalsIgnoreCase(str))){
+                    newInstance = (WholeProgramFEU) cls.getConstructor(View.class).newInstance(view);
+                }else {
+                    newInstance = (WholeProgramFEU) cls.newInstance();
+                }
             } catch (InstantiationException e) {
                 //  System.out.println("ignoring feature that takes an input value:" + str);
             } catch (Exception e) {
@@ -73,8 +90,8 @@ public class WholeProgramFX implements SingleInstanceFX<WholeProgramFeatureSet, 
                 Optional<FeatureResource> fr = getResourcePath(featureResources, str);
                 if(fr.isPresent()){
                     String resourcePath = fr.get().getResourcePath();
-                    newInstance = (WholeProgramFEU) cls.getConstructor(String.class).newInstance(resourcePath);
-                }else{
+                    newInstance = (WholeProgramFEU) cls.getConstructor(String.class, View.class).newInstance(resourcePath, view);
+                } else {
                     newInstance = (WholeProgramFEU) cls.newInstance();
                 }
             } catch (InstantiationException e) {

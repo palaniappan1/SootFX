@@ -2,7 +2,7 @@ package core.fx.classbased;
 
 import core.fx.base.ClassFEU;
 import core.fx.base.Feature;
-import soot.SootClass;
+import sootup.core.model.SootClass;
 
 public class ClassAccessModifier implements ClassFEU<String> {
 

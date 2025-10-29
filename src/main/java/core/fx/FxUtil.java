@@ -4,61 +4,67 @@ import api.FeatureDescription;
 import api.FeatureGroup;
 import api.SootFX;
 import core.fx.base.ClassFEU;
-import core.fx.base.ManifestFEU;
 import core.fx.base.MethodFEU;
 import core.fx.base.WholeProgramFEU;
 import org.reflections.Reflections;
-import soot.*;
-import soot.jimple.infoflow.android.axml.AXmlAttribute;
-import soot.jimple.infoflow.android.axml.AXmlNode;
-import soot.jimple.infoflow.android.manifest.ProcessManifest;
+import sootup.core.model.SootClass;
+import sootup.core.model.SootMethod;
+import sootup.core.typehierarchy.TypeHierarchy;
+import sootup.core.types.ClassType;
+import sootup.core.types.Type;
+import sootup.core.views.View;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class FxUtil {
 
     private static Reflections reflections = new Reflections("core.fx");
 
-    public static boolean isOfType(soot.Type type, String typeName) {
-        if (!(type instanceof RefType)) return false;
+    public static boolean isOfType(View view, Type type, String typeName) {
+        if (!(type instanceof ClassType)) return false;
 
         // Check for a direct match
-        RefType refType = (RefType) type;
-        if (refType.getSootClass().getName().equals(typeName)) return true;
+        ClassType refType = (ClassType) type;
+        if (refType.getClass().getName().equals(typeName)) return true;
 
         // interface treatment
-        if (refType.getSootClass().isInterface()) return false;
+        if (view.getClass(refType).isPresent() && view.getClass(refType).get().isInterface()) return false;
 
         // class treatment
-        Hierarchy h = Scene.v().getActiveHierarchy();
-        List<SootClass> ancestors = h.getSuperclassesOf(refType.getSootClass());
+        TypeHierarchy h = view.getTypeHierarchy();
+
+        Set<ClassType> classTypes = h.superClassesOf(refType).collect(Collectors.toSet());
+        List<SootClass> ancestors = new ArrayList<>();
+        classTypes.forEach(c -> view.getClass(c).ifPresent(ancestors::add));
+
         for (SootClass ancestor : ancestors) {
             if (ancestor.getName().equals(typeName)) return true;
-            for (SootClass sc : ancestor.getInterfaces())
-                if (sc.getName().equals(typeName)) return true;
+            for (ClassType sc : ancestor.getInterfaces())
+                if (sc.getClass().getName().equals(typeName)) return true;
         }
         return false;
     }
 
-    public static List<String> getManifestUsesFeature(ProcessManifest manifest) {
-        List<String> usesFeatures = new ArrayList<>();
-        List<AXmlNode> usesSdk = manifest.getManifest().getChildrenWithTag("uses-sdk");
-        if (usesSdk != null && !usesSdk.isEmpty()) {
-            for (AXmlNode aXmlNode : usesSdk) {
-                AXmlAttribute<?> nameAttr = aXmlNode.getAttribute("name");
-                if(nameAttr!=null){
-                    String name = (String) nameAttr.getValue();
-                    usesFeatures.add(name);
-                }
-            }
-        }
-        return usesFeatures;
-    }
+//    public static List<String> getManifestUsesFeature(ProcessManifest manifest) {
+//        List<String> usesFeatures = new ArrayList<>();
+//        List<AXmlNode> usesSdk = manifest.getManifest().getChildrenWithTag("uses-sdk");
+//        if (usesSdk != null && !usesSdk.isEmpty()) {
+//            for (AXmlNode aXmlNode : usesSdk) {
+//                AXmlAttribute<?> nameAttr = aXmlNode.getAttribute("name");
+//                if(nameAttr!=null){
+//                    String name = (String) nameAttr.getValue();
+//                    usesFeatures.add(name);
+//                }
+//            }
+//        }
+//        return usesFeatures;
+//    }
 
     public static boolean isAppMethod(SootMethod m){
-        String pkg = m.getDeclaringClass().getPackageName();
+        String pkg = m.getDeclClassType().getPackageName().getName();
         if(SootFX.isAPK){
             return isAppPackage(pkg);
         }
@@ -113,15 +119,15 @@ public class FxUtil {
         return wpList;
     }
 
-    public static List<FeatureDescription> listAllManifestFeatures(){
-        Set<Class<? extends ManifestFEU>> manifestBased = reflections.getSubTypesOf(ManifestFEU.class);
-        List<FeatureDescription> manifestList = new ArrayList<>();
-        for (Class<? extends ManifestFEU> m : manifestBased) {
-            FeatureDescription desc = new FeatureDescription(m.getSimpleName(), ""); // TODO: define descriptions and get
-            manifestList.add(desc);
-        }
-        return manifestList;
-    }
+//    public static List<FeatureDescription> listAllManifestFeatures(){
+//        Set<Class<? extends ManifestFEU>> manifestBased = reflections.getSubTypesOf(ManifestFEU.class);
+//        List<FeatureDescription> manifestList = new ArrayList<>();
+//        for (Class<? extends ManifestFEU> m : manifestBased) {
+//            FeatureDescription desc = new FeatureDescription(m.getSimpleName(), ""); // TODO: define descriptions and get
+//            manifestList.add(desc);
+//        }
+//        return manifestList;
+//    }
 
     public static List<FeatureGroup> listAllFeatures(){
         List<FeatureGroup> allFeatures = new ArrayList<>();
@@ -138,9 +144,9 @@ public class FxUtil {
         FeatureGroup wpGroup = new FeatureGroup("wholeprogrambased", wpList);
         allFeatures.add(wpGroup);
 
-        List<FeatureDescription> manifestList = listAllManifestFeatures();
-        FeatureGroup manifestGroup = new FeatureGroup("wholeprogrambased", manifestList);
-        allFeatures.add(manifestGroup);
+//        List<FeatureDescription> manifestList = listAllManifestFeatures();
+//        FeatureGroup manifestGroup = new FeatureGroup("wholeprogrambased", manifestList);
+//        allFeatures.add(manifestGroup);
 
         return allFeatures;
     }

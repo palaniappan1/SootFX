@@ -13,29 +13,29 @@ import java.util.concurrent.TimeUnit;
 public class EvaluationJar {
 
     public static void main(String[] args) throws IOException {
-        for (int i = 74; i <= 74; i++) {
-            String jarName = "mvn-" + i;
-            String path = "/Users/kadiray/Workspace/maven-top/" + jarName + ".jar";
-            String out = "/Users/kadiray/Workspace/SootFX/eval/jar/" + jarName + "/";
+//        for (int i = 74; i <= 74; i++) {
+//        String jarName = "mvn-" + i;
+        String path = "/Users/ashikmr/Desktop/online_downloads/demoJar1.jar";
+        String out = "/Users/ashikmr/Desktop/online_downloads/";
 
-            try {
-                Stopwatch stopwatch = Stopwatch.createStarted();
+        try {
+            Stopwatch stopwatch = Stopwatch.createStarted();
 
-                methodFeatures(path, out);
-                long methodDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+            methodFeatures(path, out);
+            long methodDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
-                classFeatures(path, out);
-                long classDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+            classFeatures(path, out);
+            long classDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
-                wpFeatures(path, out);
-                long wpDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+            wpFeatures(path, out);
+            long wpDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
-                logMeta(out, methodDone, classDone - methodDone, wpDone - classDone, new File(path).length());
-            } catch (Exception e){
-                e.printStackTrace();
-                System.err.println("error in apk:" + jarName);
-            }
+            logMeta(out, methodDone, classDone - methodDone, wpDone - classDone, new File(path).length());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("error in apk:");
         }
+//        }
     }
 
     public static void logMeta(String path, long methodTime, long classTime, long wpTime, long fileSizeInBytes) throws IOException {

@@ -135,13 +135,15 @@ public class CLI {
         sootFX.appOnly();
         sootFX.androidJars(androidJars); // "/Users/user/Library/Android/sdk/platforms"
         ManifestFeatureSet featureSet = null;
-        if((include==null || include.isEmpty()) && (exclude==null || exclude.isEmpty())){
-            featureSet = sootFX.extractAllManifestFeatures();
-        } else if(include==null || include.isEmpty()){
-            featureSet = sootFX.extractManifestFeaturesExclude(new HashSet<>(exclude));
-        } else if(exclude==null || exclude.isEmpty()){
-            featureSet = sootFX.extractManifestFeaturesInclude(include);
-        } else if(!include.isEmpty() && !exclude.isEmpty()){
+//        if((include==null || include.isEmpty()) && (exclude==null || exclude.isEmpty())){
+//            featureSet = sootFX.extractAllManifestFeatures();
+//        } else if(include==null || include.isEmpty()){
+//            featureSet = sootFX.extractManifestFeaturesExclude(new HashSet<>(exclude));
+//        }
+//        if(exclude==null || exclude.isEmpty()){
+//            featureSet = sootFX.extractManifestFeaturesInclude(include);
+//        }
+        if(!include.isEmpty() && !exclude.isEmpty()){
             throw new RuntimeException("You must either provide manifestFeatureInclusion or manifestFeatureExclusion in config.yaml. \n Inclusion list only extracts the selected features. Exclusion list extracts all but the selected features.");
         }
         sootFX.printSingleSetToCSV(featureSet, out + "manifest.csv");

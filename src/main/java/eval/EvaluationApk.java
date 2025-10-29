@@ -87,8 +87,8 @@ public class EvaluationApk {
         sootFX.addClassPath(path);
         sootFX.appOnly();
         sootFX.androidJars("/Users/kadiray/Library/Android/sdk/platforms");
-        ManifestFeatureSet featureSet = sootFX.extractAllManifestFeatures();
-        sootFX.printSingleSetToCSV(featureSet, out + "manifest.csv");
+//        ManifestFeatureSet featureSet = sootFX.extractAllManifestFeatures();
+//        sootFX.printSingleSetToCSV(featureSet, out + "manifest.csv");
     }
 
 }

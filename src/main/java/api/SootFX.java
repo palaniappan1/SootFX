@@ -3,11 +3,12 @@ package api;
 import core.fx.FxUtil;
 import core.rm.*;
 import manager.ClassFX;
-import manager.ManifestFX;
+//import manager.ManifestFX;
 import manager.MethodFX;
 import manager.WholeProgramFX;
 import resource.SootConnector;
 import core.fx.base.*;
+import sootup.core.views.View;
 
 import java.io.*;
 import java.util.*;
@@ -54,28 +55,28 @@ public class SootFX {
 
     public Set<MethodFeatureSet> extractMethodFeaturesInclude(Set<MethodFEU> featureExtractors) {
         validate();
-        SootConnector.setupSoot(mainClass, classPaths, appOnly, androidJars);
+        View view = SootConnector.sootupConnector(mainClass, classPaths, appOnly, androidJars);
         //SootClass sc = Scene.v().forceResolve(mainClass, SootClass.BODIES);
         //Chain<SootClass> classes = Scene.v().getApplicationClasses();
-        return new MethodFX().getFeatures(featureExtractors);
+        return new MethodFX(view).getFeatures(featureExtractors);
     }
 
     public Set<MethodFeatureSet> extractAllMethodFeatures() {
         validate();
-        SootConnector.setupSoot(mainClass, classPaths, appOnly, androidJars);
-        return new MethodFX().getAllFeatures();
+        View view = SootConnector.sootupConnector(mainClass, classPaths, appOnly, androidJars);
+        return new MethodFX(view).getAllFeatures();
     }
 
     public Set<MethodFeatureSet> extractMethodFeaturesExclude(Set<String> exclusion) {
         validate();
-        SootConnector.setupSoot(mainClass, classPaths, appOnly, androidJars);
-        return new MethodFX().getAllFeaturesExclude(exclusion);
+        View view = SootConnector.sootupConnector(mainClass, classPaths, appOnly, androidJars);
+        return new MethodFX(view).getAllFeaturesExclude(exclusion);
     }
 
     public Set<MethodFeatureSet> extractMethodFeaturesInclude(List<String> featureExtractors) {
         validate();
-        SootConnector.setupSoot(mainClass, classPaths, appOnly, androidJars);
-        return new MethodFX().getFeatures(featureExtractors);
+        View view = SootConnector.sootupConnector(mainClass, classPaths, appOnly, androidJars);
+        return new MethodFX(view).getFeatures(featureExtractors);
     }
 
     public List<FeatureDescription> listAllMethodFeatures(){
@@ -85,73 +86,73 @@ public class SootFX {
 
     public Set<ClassFeatureSet> extractClassFeaturesInclude(Set<ClassFEU> featureExtractors) {
         validate();
-        SootConnector.setupSoot(mainClass, classPaths, appOnly, androidJars);
-        return new ClassFX().getFeatures(featureExtractors);
+        View view = SootConnector.sootupConnector(mainClass, classPaths, appOnly, androidJars);
+        return new ClassFX(view).getFeatures(featureExtractors);
     }
 
     public Set<ClassFeatureSet> extractAllClassFeatures() {
         validate();
-        SootConnector.setupSoot(mainClass, classPaths, appOnly, androidJars);
-        return new ClassFX().getAllFeatures();
+        View view = SootConnector.sootupConnector(mainClass, classPaths, appOnly, androidJars);
+        return new ClassFX(view).getAllFeatures();
     }
 
     public Set<ClassFeatureSet> extractClassFeaturesExclude(Set<String> exclusion) {
         validate();
-        SootConnector.setupSoot(mainClass, classPaths, appOnly, androidJars);
-        return new ClassFX().getAllFeaturesExclude(exclusion);
+        View view = SootConnector.sootupConnector(mainClass, classPaths, appOnly, androidJars);
+        return new ClassFX(view).getAllFeaturesExclude(exclusion);
     }
 
     public Set<ClassFeatureSet> extractClassFeaturesInclude(List<String> featureExtractors) {
         validate();
-        SootConnector.setupSoot(mainClass, classPaths, appOnly, androidJars);
-        return new ClassFX().getFeatures(featureExtractors);
+        View view = SootConnector.sootupConnector(mainClass, classPaths, appOnly, androidJars);
+        return new ClassFX(view).getFeatures(featureExtractors);
     }
 
     public WholeProgramFeatureSet extractWholeProgramFeaturesInclude(Set<WholeProgramFEU> featureExtractors) {
         validate();
-        SootConnector.setupSoot(mainClass, classPaths, appOnly, androidJars);
-        return new WholeProgramFX().getFeatures(featureExtractors);
+        View view = SootConnector.sootupConnector(mainClass, classPaths, appOnly, androidJars);
+        return new WholeProgramFX(view).getFeatures(featureExtractors);
     }
 
     public WholeProgramFeatureSet extractAllWholeProgramFeatures() {
         validate();
-        SootConnector.setupSoot(mainClass, classPaths, appOnly, androidJars);
-        return new WholeProgramFX().getAllFeatures();
+        View view = SootConnector.sootupConnector(mainClass, classPaths, appOnly, androidJars);
+        return new WholeProgramFX(view).getAllFeatures();
     }
 
     public WholeProgramFeatureSet extractWholeProgramFeaturesExclude(Set<String> exclusion) {
         validate();
-        SootConnector.setupSoot(mainClass, classPaths, appOnly, androidJars);
-        return new WholeProgramFX().getAllFeaturesExclude(exclusion);
+        View view = SootConnector.sootupConnector(mainClass, classPaths, appOnly, androidJars);
+        return new WholeProgramFX(view).getAllFeaturesExclude(exclusion);
     }
 
     public WholeProgramFeatureSet extractWholeProgramFeaturesInclude(List<String> featureExtractors, List<FeatureResource> featureResources) {
         validate();
-        SootConnector.setupSoot(mainClass, classPaths, appOnly, androidJars);
-        return new WholeProgramFX().getFeatures(featureExtractors, featureResources);
+        View view = SootConnector.sootupConnector(mainClass, classPaths, appOnly, androidJars);
+        return new WholeProgramFX(view).getFeatures(featureExtractors, featureResources);
     }
 
-    public ManifestFeatureSet extractManifestFeaturesInclude(Set<ManifestFEU> featureExtractors) {
-        return new ManifestFX(getApkPath()).getFeatures(featureExtractors);
-    }
+//    public ManifestFeatureSet extractManifestFeaturesInclude(Set<ManifestFEU> featureExtractors) {
+//        return new ManifestFX(getApkPath()).getFeatures(featureExtractors);
+//    }
 
-    public ManifestFeatureSet extractAllManifestFeatures() {
-        validate();
-        SootConnector.setupSoot(mainClass, classPaths, appOnly, androidJars);
-        return new ManifestFX(getApkPath()).getAllFeatures();
-    }
+//    public ManifestFeatureSet extractAllManifestFeatures() {
+//        validate();
+//        SootConnector.setupSootup(mainClass, classPaths, appOnly, androidJars);
+//        return new ManifestFX(getApkPath()).getAllFeatures();
+//    }
 
-    public ManifestFeatureSet extractManifestFeaturesExclude(Set<String> exclusion) {
-        validate();
-        SootConnector.setupSoot(mainClass, classPaths, appOnly, androidJars);
-        return new ManifestFX(getApkPath()).getAllFeaturesExclude(exclusion);
-    }
-
-    public ManifestFeatureSet extractManifestFeaturesInclude(List<String> featureExtractors) {
-        validate();
-        SootConnector.setupSoot(mainClass, classPaths, appOnly, androidJars);
-        return new ManifestFX(getApkPath()).getFeatures(featureExtractors);
-    }
+//    public ManifestFeatureSet extractManifestFeaturesExclude(Set<String> exclusion) {
+//        validate();
+//        SootConnector.setupSootup(mainClass, classPaths, appOnly, androidJars);
+//        return new ManifestFX(getApkPath()).getAllFeaturesExclude(exclusion);
+//    }
+//
+//    public ManifestFeatureSet extractManifestFeaturesInclude(List<String> featureExtractors) {
+//        validate();
+//        SootConnector.setupSootup(mainClass, classPaths, appOnly, androidJars);
+//        return new ManifestFX(getApkPath()).getFeatures(featureExtractors);
+//    }
 
     public void printMethodToCSV(Set<MethodFeatureSet> set, String path) {
         boolean isFirst = true;

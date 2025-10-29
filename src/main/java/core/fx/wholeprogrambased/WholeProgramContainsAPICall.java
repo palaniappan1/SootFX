@@ -1,36 +1,37 @@
 package core.fx.wholeprogrambased;
 
-import com.google.common.collect.Streams;
 import core.fx.base.Feature;
 import core.fx.base.WholeProgramFEU;
 import org.apache.commons.lang3.StringUtils;
-import soot.SootMethod;
-import soot.jimple.toolkits.callgraph.CallGraph;
-import soot.jimple.toolkits.callgraph.Edge;
+import org.jspecify.annotations.NonNull;
+import sootup.callgraph.CallGraph;
+import sootup.core.model.SootMethod;
+import sootup.core.signatures.MethodSignature;
+import sootup.core.views.View;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.stream.Stream;
 
 public class WholeProgramContainsAPICall implements WholeProgramFEU<Boolean> {
 
     private String value;
 
-    public WholeProgramContainsAPICall(String value) {
+    @NonNull
+    private final View view;
+
+    public WholeProgramContainsAPICall(String value, View view) {
+        this.view = view;
         this.value = value;
     }
 
     @Override
     public Feature<Boolean> extract(CallGraph target) {
-        Iterator<Edge> iterator = target.iterator();
+        Set<MethodSignature> methodSignatures = target.getMethodSignatures();
         Set<SootMethod> methods = new HashSet<>();
-        Stream<Edge> stream = Streams.stream(iterator);
-        stream.forEach(e-> {
-            if(StringUtils.containsIgnoreCase(e.tgt().getName(), value)){
-                methods.add(e.tgt());
-            }
-        });
+
+        methodSignatures.forEach(e -> view.getMethod(e)
+                .filter(m -> StringUtils.containsIgnoreCase(m.getName(), value)).ifPresent(methods::add));
+
         return new Feature<>(this.getClass().getSimpleName(), !methods.isEmpty());
     }
 }

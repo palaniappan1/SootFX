@@ -5,28 +5,29 @@ import core.fx.FxUtil;
 import core.fx.base.ClassFEU;
 import core.fx.base.Feature;
 import core.rm.ClassFeatureSet;
-import soot.Scene;
-import soot.SootClass;
+import sootup.core.model.SootClass;
+import sootup.core.views.View;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NonNull;
 
 public class ClassFX implements MultiInstanceFX<ClassFeatureSet, ClassFEU> {
+
+    @NonNull private final View view;
+
+    public ClassFX(@NonNull View view) {
+        this.view = view;
+    }
 
     @Override
     public Set<ClassFeatureSet> getFeatures(Set<ClassFEU> featureExtractors) {
         Set<ClassFeatureSet> classFeatures = new HashSet<>();
         Set<SootClass> classes = new HashSet<>();
-        Iterator<SootClass> classIter = Scene.v().getApplicationClasses().iterator();
-        while(classIter.hasNext()){
-            SootClass sc = classIter.next();
-            if(FxUtil.isAppClass(sc)){
-                classes.add(sc);
-            }
-        }
+        Set<SootClass> sootClasses =  view.getClasses().collect(Collectors.toSet());
+        sootClasses.stream().filter(FxUtil::isAppClass).forEach(classes::add);
         for(SootClass sc: classes){
             classFeatures.add(extractClassFeature(sc, featureExtractors));
         }

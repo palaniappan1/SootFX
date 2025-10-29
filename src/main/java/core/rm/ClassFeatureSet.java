@@ -1,7 +1,8 @@
 package core.rm;
 
-import soot.SootClass;
-import java.util.TreeSet;
+ import sootup.core.model.SootClass;
+
+ import java.util.TreeSet;
 
 public class ClassFeatureSet extends AbstractFeatureSet {
 

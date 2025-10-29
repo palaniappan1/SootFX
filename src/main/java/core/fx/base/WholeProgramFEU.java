@@ -1,6 +1,6 @@
 package core.fx.base;
 
-import soot.jimple.toolkits.callgraph.CallGraph;
+import sootup.callgraph.CallGraph;
 
 public interface WholeProgramFEU<V> extends FeatureExtractionUnit<V, CallGraph> {
 }

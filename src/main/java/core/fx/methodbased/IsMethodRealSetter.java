@@ -2,11 +2,15 @@ package core.fx.methodbased;
 
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
-import soot.SootMethod;
-import soot.Unit;
-import soot.Value;
-import soot.jimple.*;
-
+import sootup.core.jimple.basic.Value;
+import sootup.core.jimple.common.expr.AbstractInvokeExpr;
+import sootup.core.jimple.common.ref.JInstanceFieldRef;
+import sootup.core.jimple.common.ref.JParameterRef;
+import sootup.core.jimple.common.stmt.InvokableStmt;
+import sootup.core.jimple.common.stmt.JAssignStmt;
+import sootup.core.jimple.common.stmt.JIdentityStmt;
+import sootup.core.jimple.common.stmt.Stmt;
+import sootup.core.model.SootMethod;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,32 +20,31 @@ public class IsMethodRealSetter implements MethodFEU<Boolean> {
     public Feature<Boolean> extract(SootMethod target) {
         if (target.getName().startsWith("set") && target.isConcrete()){
             Set<Value> paramVals = new HashSet<Value>();
-            for (Unit u : target.retrieveActiveBody().getUnits()) {
-                if (u instanceof IdentityStmt) {
-                    IdentityStmt id = (IdentityStmt) u;
-                    if (id.getRightOp() instanceof ParameterRef){
+            for (Stmt u : target.getBody().getStmts()) {
+                if (u instanceof JIdentityStmt) {
+                    JIdentityStmt id = (JIdentityStmt) u;
+                    if (id.getRightOp() instanceof JParameterRef){
                         paramVals.add(id.getLeftOp());
                     }
-                } else if (u instanceof AssignStmt) {
-                    AssignStmt assign = (AssignStmt) u;
+                } else if (u instanceof JAssignStmt) {
+                    JAssignStmt assign = (JAssignStmt) u;
                     if (paramVals.contains(assign.getRightOp())){
-                        if (assign.getLeftOp() instanceof InstanceFieldRef){
+                        if (assign.getLeftOp() instanceof JInstanceFieldRef){
                             return new Feature<>(getName(), true);
                         }
                     }
                 }
-                if (u instanceof Stmt) {
-                    Stmt stmt = (Stmt) u;
-                    if (stmt.containsInvokeExpr()) {
-                        if (stmt.getInvokeExpr().getMethod().getName().startsWith("get")){
-                            for (Value arg : stmt.getInvokeExpr().getArgs()){
-                                if (paramVals.contains(arg)){
-                                    return new Feature<>(getName(), true);
-                                }
+                if (u instanceof InvokableStmt && ((InvokableStmt) u).getInvokeExpr().isPresent()) {
+                    AbstractInvokeExpr invokeExpr = ((InvokableStmt) u).getInvokeExpr().get();
+                    if (invokeExpr.getMethodSignature().getName().startsWith("get")) {
+                        for (Value arg : invokeExpr.getArgs()) {
+                            if (paramVals.contains(arg)) {
+                                return new Feature<>(getName(), true);
                             }
                         }
                     }
                 }
+
             }
             return new Feature<>(getName(), false);
         }
