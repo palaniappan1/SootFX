@@ -24,16 +24,12 @@ public class WholeProgramAPICallCount implements WholeProgramFEU<Map<String, Lon
 
     @Override
     public Feature<Map<String, Long>> extract(CallGraph target) {
-        Set<MethodSignature> ms = target.getMethodSignatures();
+        Set<MethodSignature> sootMethodSignatures = target.getMethodSignatures();
         Map<String, Long> methodCount = new HashMap<>();
-        ms.forEach(e-> {
+        sootMethodSignatures.forEach(e-> {
             if(methodSignatures.contains(e.toString())){
-                if(methodCount.containsKey(e.toString())){
-                    Long count = methodCount.get(e.toString());
-                    methodCount.put(e.toString(), ++count);
-                }else{
-                    methodCount.put(e.toString(), 1L);
-                }
+                Long count = methodCount.getOrDefault(e.toString(), 0L);
+                methodCount.put(e.toString(), count + 1);
             }
         });
         return new Feature<>(this.getClass().getSimpleName(), methodCount);

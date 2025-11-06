@@ -4,7 +4,7 @@ import core.fx.base.ClassFEU;
 import core.fx.base.Feature;
 import sootup.core.model.SootClass;
 
-public class ClassContainsField implements ClassFEU<Integer> {
+public class ClassContainsField implements ClassFEU<Boolean> {
 
     private String value;
 
@@ -13,9 +13,9 @@ public class ClassContainsField implements ClassFEU<Integer> {
     }
 
     @Override
-    public Feature<Integer> extract(SootClass target) {
-        target.getFields().forEach(field -> field.getName().contains(value));
-        return new Feature<>(getName(), target.getMethods().size());
+    public Feature<Boolean> extract(SootClass target) {
+        Boolean containsField = target.getFields().stream().anyMatch(field -> field.getName().contains(value));
+        return new Feature<>(getName(), containsField);
     }
 
 }

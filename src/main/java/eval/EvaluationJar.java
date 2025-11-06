@@ -1,33 +1,44 @@
 package eval;
 
-import api.SootFX;
+import api.Config;
+import api.FeatureResource;
 import com.google.common.base.Stopwatch;
 import core.rm.ClassFeatureSet;
 import core.rm.MethodFeatureSet;
 import core.rm.WholeProgramFeatureSet;
+import api.SootFX;
 
 import java.io.*;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import static api.CLI.getConfig;
 
 public class EvaluationJar {
 
     public static void main(String[] args) throws IOException {
 //        for (int i = 74; i <= 74; i++) {
 //        String jarName = "mvn-" + i;
-        String path = "/Users/ashikmr/Desktop/online_downloads/demoJar1.jar";
-        String out = "/Users/ashikmr/Desktop/online_downloads/";
+        String path =
+//                "/Users/ashikmr/Desktop/contrastive_explanations/target/contrastive-explanations-0.3-SNAPSHOT-jar-with-dependencies.jar";
 
+                "/Users/ashikmr/Desktop/soot-testing/test1/demo1.jar";
+        String out = "/Users/ashikmr/Desktop/soot-testing/sootup/";
+
+        String configPath = "/Users/ashikmr/Desktop/SootFX/config.yaml";
+        Config config = getConfig(configPath);
+        List<FeatureResource> featureResources = config.getFeatureResources();
         try {
             Stopwatch stopwatch = Stopwatch.createStarted();
 
-            methodFeatures(path, out);
+            methodFeatures(path, out, featureResources);
             long methodDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
-            classFeatures(path, out);
+            classFeatures(path, out, featureResources);
             long classDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
-            wpFeatures(path, out);
+            wpFeatures(path, out, featureResources);
             long wpDone = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
             logMeta(out, methodDone, classDone - methodDone, wpDone - classDone, new File(path).length());
@@ -53,28 +64,28 @@ public class EvaluationJar {
         }
     }
 
-    public static void classFeatures(String path, String out) throws IOException {
+    public static void classFeatures(String path, String out, List<FeatureResource> featureResources) throws IOException {
         SootFX sootFX = new SootFX();
         sootFX.addClassPath(path);
         sootFX.appOnly();
-        Set<ClassFeatureSet> featureSets = sootFX.extractAllClassFeatures();
-        sootFX.printMultiSetToCSV(featureSets, out + "class.csv");
+        Set<ClassFeatureSet> featureSets = sootFX.extractAllClassFeatures(featureResources);
+        sootFX.printMultiSetToCSV(featureSets, out + "classup.csv");
     }
 
-    public static void methodFeatures(String path, String out) throws IOException {
+    public static void methodFeatures(String path, String out, List<FeatureResource> featureResources) throws IOException {
         SootFX sootFX = new SootFX();
         sootFX.addClassPath(path);
         sootFX.appOnly();
-        Set<MethodFeatureSet> featureSets = sootFX.extractAllMethodFeatures();
-        sootFX.printMultiSetToCSV(featureSets, out + "method.csv");
+        Set<MethodFeatureSet> featureSets = sootFX.extractAllMethodFeatures(featureResources);
+        sootFX.printMultiSetToCSV(featureSets, out + "methodup.csv");
     }
 
-    public static void wpFeatures(String path, String out) throws IOException {
+    public static void wpFeatures(String path, String out, List<FeatureResource> featureResources) throws IOException {
         SootFX sootFX = new SootFX();
         sootFX.addClassPath(path);
         sootFX.appOnly();
-        WholeProgramFeatureSet featureSet = sootFX.extractAllWholeProgramFeatures();
-        sootFX.printSingleSetToCSV(featureSet, out + "wp.csv");
+        WholeProgramFeatureSet featureSet = sootFX.extractAllWholeProgramFeatures(featureResources);
+        sootFX.printSingleSetToCSV(featureSet, out + "wpup.csv");
     }
 
 

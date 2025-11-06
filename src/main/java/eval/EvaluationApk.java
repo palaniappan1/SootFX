@@ -60,7 +60,7 @@ public class EvaluationApk {
         sootFX.addClassPath(path);
         sootFX.appOnly();
         sootFX.androidJars("/Users/kadiray/Library/Android/sdk/platforms");
-        Set<ClassFeatureSet> featureSets = sootFX.extractAllClassFeatures();
+        Set<ClassFeatureSet> featureSets = sootFX.extractAllClassFeatures(null);
         sootFX.printMultiSetToCSV(featureSets, out + "class.csv");
     }
 
@@ -69,7 +69,7 @@ public class EvaluationApk {
         sootFX.addClassPath(path);
         sootFX.appOnly();
         sootFX.androidJars("/Users/kadiray/Library/Android/sdk/platforms");
-        Set<MethodFeatureSet> featureSets = sootFX.extractAllMethodFeatures();
+        Set<MethodFeatureSet> featureSets = sootFX.extractAllMethodFeatures(null);
         sootFX.printMultiSetToCSV(featureSets, out + "method.csv");
     }
 
@@ -78,7 +78,7 @@ public class EvaluationApk {
         sootFX.addClassPath(path);
         sootFX.appOnly();
         sootFX.androidJars("/Users/kadiray/Library/Android/sdk/platforms");
-        WholeProgramFeatureSet featureSet = sootFX.extractAllWholeProgramFeatures();
+        WholeProgramFeatureSet featureSet = sootFX.extractAllWholeProgramFeatures(null);
         sootFX.printSingleSetToCSV(featureSet, out + "wp.csv");
     }
 
@@ -87,8 +87,6 @@ public class EvaluationApk {
         sootFX.addClassPath(path);
         sootFX.appOnly();
         sootFX.androidJars("/Users/kadiray/Library/Android/sdk/platforms");
-//        ManifestFeatureSet featureSet = sootFX.extractAllManifestFeatures();
-//        sootFX.printSingleSetToCSV(featureSet, out + "manifest.csv");
     }
 
 }

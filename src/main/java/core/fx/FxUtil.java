@@ -28,7 +28,7 @@ public class FxUtil {
 
         // Check for a direct match
         ClassType refType = (ClassType) type;
-        if (refType.getClass().getName().equals(typeName)) return true;
+        if (refType.getFullyQualifiedName().equals(typeName)) return true;
 
         // interface treatment
         if (view.getClass(refType).isPresent() && view.getClass(refType).get().isInterface()) return false;
@@ -43,25 +43,10 @@ public class FxUtil {
         for (SootClass ancestor : ancestors) {
             if (ancestor.getName().equals(typeName)) return true;
             for (ClassType sc : ancestor.getInterfaces())
-                if (sc.getClass().getName().equals(typeName)) return true;
+                if (sc.getFullyQualifiedName().equals(typeName)) return true;
         }
         return false;
     }
-
-//    public static List<String> getManifestUsesFeature(ProcessManifest manifest) {
-//        List<String> usesFeatures = new ArrayList<>();
-//        List<AXmlNode> usesSdk = manifest.getManifest().getChildrenWithTag("uses-sdk");
-//        if (usesSdk != null && !usesSdk.isEmpty()) {
-//            for (AXmlNode aXmlNode : usesSdk) {
-//                AXmlAttribute<?> nameAttr = aXmlNode.getAttribute("name");
-//                if(nameAttr!=null){
-//                    String name = (String) nameAttr.getValue();
-//                    usesFeatures.add(name);
-//                }
-//            }
-//        }
-//        return usesFeatures;
-//    }
 
     public static boolean isAppMethod(SootMethod m){
         String pkg = m.getDeclClassType().getPackageName().getName();
@@ -119,16 +104,6 @@ public class FxUtil {
         return wpList;
     }
 
-//    public static List<FeatureDescription> listAllManifestFeatures(){
-//        Set<Class<? extends ManifestFEU>> manifestBased = reflections.getSubTypesOf(ManifestFEU.class);
-//        List<FeatureDescription> manifestList = new ArrayList<>();
-//        for (Class<? extends ManifestFEU> m : manifestBased) {
-//            FeatureDescription desc = new FeatureDescription(m.getSimpleName(), ""); // TODO: define descriptions and get
-//            manifestList.add(desc);
-//        }
-//        return manifestList;
-//    }
-
     public static List<FeatureGroup> listAllFeatures(){
         List<FeatureGroup> allFeatures = new ArrayList<>();
 
@@ -143,10 +118,6 @@ public class FxUtil {
         List<FeatureDescription> wpList = listAllWholeProgramFeatures();
         FeatureGroup wpGroup = new FeatureGroup("wholeprogrambased", wpList);
         allFeatures.add(wpGroup);
-
-//        List<FeatureDescription> manifestList = listAllManifestFeatures();
-//        FeatureGroup manifestGroup = new FeatureGroup("wholeprogrambased", manifestList);
-//        allFeatures.add(manifestGroup);
 
         return allFeatures;
     }

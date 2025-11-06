@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import sootup.java.bytecode.frontend.inputlocation.DefaultRuntimeAnalysisInputLocation;
 import sootup.java.bytecode.frontend.inputlocation.JavaClassPathAnalysisInputLocation;
 import sootup.java.core.views.JavaView;
 
@@ -29,7 +30,10 @@ public class SootConnector {
             });
             return new JavaView(apkAnalysisInputLocations);
         } else {
-            AnalysisInputLocation analysisInputLocation = new JavaClassPathAnalysisInputLocation(cp);
+            List<AnalysisInputLocation> analysisInputLocation = new ArrayList<>();
+
+            analysisInputLocation.add(new JavaClassPathAnalysisInputLocation(cp));
+//            analysisInputLocation.add(new DefaultRuntimeAnalysisInputLocation());
             return new JavaView(analysisInputLocation);
         }
     }

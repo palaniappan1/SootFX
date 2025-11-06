@@ -2,7 +2,7 @@ package core.fx.methodbased;
 
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import sootup.core.model.SootMethod;
 
 public class MethodContainsObject implements MethodFEU<Boolean> {
@@ -17,7 +17,7 @@ public class MethodContainsObject implements MethodFEU<Boolean> {
     public Feature<Boolean> extract(SootMethod target) {
         boolean contains = false;
         if(target.hasBody()){
-            contains = StringUtils.containsIgnoreCase(target.getBody().toString(), value);
+            contains = Strings.CI.contains(target.getBody().toString(), value);
         }
         return new Feature<>(getName(), contains);
     }

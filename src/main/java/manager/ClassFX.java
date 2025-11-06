@@ -1,6 +1,7 @@
 package manager;
 
 import api.FeatureDescription;
+import api.FeatureResource;
 import core.fx.FxUtil;
 import core.fx.base.ClassFEU;
 import core.fx.base.Feature;
@@ -10,9 +11,12 @@ import sootup.core.views.View;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NonNull;
+
+import static manager.WholeProgramFX.getResourcePath;
 
 public class ClassFX implements MultiInstanceFX<ClassFeatureSet, ClassFEU> {
 
@@ -35,29 +39,34 @@ public class ClassFX implements MultiInstanceFX<ClassFeatureSet, ClassFEU> {
     }
 
     @Override
-    public Set<ClassFeatureSet> getAllFeatures() {
+    public Set<ClassFeatureSet> getAllFeatures(List<FeatureResource> featureResources) {
         List<FeatureDescription> features = FxUtil.listAllClassFeatures();
         List<String> names = features.stream().map(f -> f.getName()).collect(Collectors.toList());
-        return getFeatures(names);
+        return getFeatures(names, featureResources);
     }
 
     @Override
-    public Set<ClassFeatureSet> getAllFeaturesExclude(Set<String> exclusion) {
+    public Set<ClassFeatureSet> getAllFeaturesExclude(Set<String> exclusion, List<FeatureResource> featureResources) {
         List<FeatureDescription> features = FxUtil.listAllClassFeatures();
         List<String> names = features.stream().map(f -> f.getName()).collect(Collectors.toList());
         names.removeAll(exclusion);
-        return getFeatures(names);
+        return getFeatures(names, featureResources);
     }
 
     @Override
-    public Set<ClassFeatureSet> getFeatures(List<String> featureExtractors) {
+    public Set<ClassFeatureSet> getFeatures(List<String> featureExtractors, List<FeatureResource> featureResources) {
         Set<ClassFEU> fxSet = new HashSet<>();
         for(String str: featureExtractors){
             Class<?> cls = null;
             ClassFEU newInstance = null;
             try{
                 cls = Class.forName("core.fx.classbased." + str);
-                newInstance = (ClassFEU) cls.newInstance();
+                Optional<FeatureResource> featureResource = getResourcePath(featureResources, str);
+                if(featureResource.isPresent()){
+                    newInstance = (ClassFEU) cls.getConstructor(String.class).newInstance(featureResource.get().getFeatureValue());
+                } else {
+                    newInstance = (ClassFEU) cls.newInstance();
+                }
             }catch (InstantiationException e){
                 //System.out.println("ignoring feature that takes an input value:" + str);
             } catch (Exception e){

@@ -11,11 +11,11 @@ public interface SingleInstanceFX<S extends AbstractFeatureSet, E extends Featur
 
     S getFeatures(Set<E> featureExtractors);
 
-    S getAllFeatures();
+    S getAllFeatures(List<FeatureResource> featureResources);
 
-    S getAllFeaturesExclude(Set<String> exclusion);
+    S getAllFeaturesExclude(Set<String> exclusion, List<FeatureResource> featureResources);
 
-    S getFeatures(List<String> featureExtractors);
+//    S getFeatures(List<String> featureExtractors);
 
     S getFeatures(List<String> featureExtractors, List<FeatureResource> featureResources);
 

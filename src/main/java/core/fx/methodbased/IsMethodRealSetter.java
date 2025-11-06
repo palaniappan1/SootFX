@@ -4,6 +4,7 @@ import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
 import sootup.core.jimple.basic.Value;
 import sootup.core.jimple.common.expr.AbstractInvokeExpr;
+import sootup.core.jimple.common.expr.JCastExpr;
 import sootup.core.jimple.common.ref.JInstanceFieldRef;
 import sootup.core.jimple.common.ref.JParameterRef;
 import sootup.core.jimple.common.stmt.InvokableStmt;
@@ -28,7 +29,11 @@ public class IsMethodRealSetter implements MethodFEU<Boolean> {
                     }
                 } else if (u instanceof JAssignStmt) {
                     JAssignStmt assign = (JAssignStmt) u;
-                    if (paramVals.contains(assign.getRightOp())){
+                    Value rightOp = ((JAssignStmt) u).getRightOp();
+                    if(rightOp instanceof JCastExpr) {
+                        rightOp = ((JCastExpr) rightOp).getOp();
+                    }
+                    if (paramVals.contains(rightOp)){
                         if (assign.getLeftOp() instanceof JInstanceFieldRef){
                             return new Feature<>(getName(), true);
                         }

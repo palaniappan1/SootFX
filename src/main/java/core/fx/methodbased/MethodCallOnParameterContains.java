@@ -2,8 +2,8 @@ package core.fx.methodbased;
 
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
-import org.apache.commons.lang3.StringUtils;
 
+import org.apache.commons.lang3.Strings;
 import sootup.core.jimple.basic.Value;
 import sootup.core.jimple.common.expr.AbstractInstanceInvokeExpr;
 import sootup.core.jimple.common.expr.AbstractInvokeExpr;
@@ -40,7 +40,7 @@ public class MethodCallOnParameterContains implements MethodFEU<Boolean> {
                 if (u instanceof InvokableStmt && ((InvokableStmt) u).getInvokeExpr().isPresent()) {
                     AbstractInvokeExpr invokeExpr = ((InvokableStmt) u).getInvokeExpr().get();
                     if (invokeExpr instanceof AbstractInstanceInvokeExpr && paramVals.contains(((AbstractInstanceInvokeExpr) invokeExpr).getBase())) {
-                        if (StringUtils.containsIgnoreCase(invokeExpr.getMethodSignature().getName(), value)) {
+                        if (Strings.CI.contains(invokeExpr.getMethodSignature().getName(), value)) {
                             contains = true;
                             break;
                         }

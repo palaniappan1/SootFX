@@ -3,7 +3,6 @@ package core.fx.methodbased;
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
 import org.jspecify.annotations.NonNull;
-import sootup.core.model.SootClass;
 import sootup.core.model.SootMethod;
 import sootup.core.types.ArrayType;
 import sootup.core.types.ClassType;
@@ -22,23 +21,38 @@ public class MethodParamIsInterface implements MethodFEU<Boolean> {
     @Override
     public Feature<Boolean> extract(SootMethod target) {
         if(target.getParameterCount()>0) {
-            ClassType ct = null;
-            for (Type t : target.getParameterTypes()) {
-                if (t instanceof ClassType) {
-                    ct = (ClassType) t;
-                } else if (t instanceof ArrayType) {
-                    Type base = ((ArrayType) t).getBaseType();
+            ClassType classType = null;
+            for (Type type : target.getParameterTypes()) {
+                if (type instanceof ClassType) {
+                    classType = (ClassType) type;
+                } else if (type instanceof ArrayType) {
+                    Type base = ((ArrayType) type).getBaseType();
                     if (base instanceof ClassType) {
-                        ct = (ClassType) base;
+                        classType = (ClassType) base;
                     }
                 }
-
-                if (ct != null && view.getClass(ct).isPresent()) {
-                    SootClass sc = view.getClass(ct).get();
-                    return new Feature<>(getName(), sc.isInterface());
+                if (classType != null && view.getTypeHierarchy().contains(classType)) {
+                    return new Feature<>(getName(), view.getTypeHierarchy().isInterface(classType));
+                }
+                if(classType !=null) {
+                    String name = classType.toString();
+                    Boolean viaReflection = isInterface(name);
+                    if (viaReflection != null && viaReflection) {
+                        return new Feature<>(getName(), true);
+                    }
                 }
             }
         }
         return new Feature<>(getName(), false);
+    }
+
+    private static Boolean isInterface(String fqName) {
+        if (!fqName.startsWith("java.")) return null;
+        try {
+            Class<?> c = Class.forName(fqName, false, ClassLoader.getSystemClassLoader());
+            return c.isInterface();
+        } catch (Throwable ignore) {
+            return null;
+        }
     }
 }

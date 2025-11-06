@@ -2,7 +2,7 @@ package core.fx.methodbased;
 
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.jspecify.annotations.NonNull;
 import sootup.core.jimple.common.expr.AbstractInvokeExpr;
 import sootup.core.jimple.common.stmt.InvokableStmt;
@@ -19,15 +19,15 @@ public class MethodCallsMethod implements MethodFEU<Boolean> {
 
     private String className;
     private String methodName;
+
     @NonNull
     private View view;
 
-    public MethodCallsMethod(String className, String methodName) {
-        this.className = className;
-        this.methodName = methodName;
-    }
-
-    public MethodCallsMethod(View view) {
+    public MethodCallsMethod(String methodNameWithClassName, View view) {
+        String cleaned = methodNameWithClassName.replaceAll("[{}\\s]", "");
+        String[] parts = cleaned.split(",");
+        this.className = parts[0];
+        this.methodName = parts[1];
         this.view = view;
     }
 
@@ -54,11 +54,11 @@ public class MethodCallsMethod implements MethodFEU<Boolean> {
                     continue;
 
                 AbstractInvokeExpr inv = ((InvokableStmt) u).getInvokeExpr().get();
-                if (StringUtils.startsWithIgnoreCase(inv.getMethodSignature().getName(), this.methodName)) {
+                if (Strings.CI.startsWith(inv.getMethodSignature().getName(), this.methodName)) {
                     if (this.className.isEmpty() || this.className
                             .equals(inv.getMethodSignature().getDeclClassType().getClassName()))
                         return true;
-                } else if (checkMethod(this.view.getMethod(inv.getMethodSignature()).get(), doneList))
+                } else if (this.view.getMethod(inv.getMethodSignature()).isPresent() && checkMethod(this.view.getMethod(inv.getMethodSignature()).get(), doneList))
                     return true;
             }
             return false;

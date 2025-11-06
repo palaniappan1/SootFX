@@ -11,7 +11,7 @@ public class IsMethodClassAnonymous implements MethodFEU<Boolean> {
     @Override
     public Feature<Boolean> extract(SootMethod target) {
         boolean isAnonymous = false;
-        int index = target.getClass().getDeclaringClass().getName().lastIndexOf("$");
+        int index = target.getDeclaringClassType().getClassName().lastIndexOf("$");
         if(index != -1){
             try {
                 String subclassName = target.getName().substring(index + 1);

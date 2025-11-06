@@ -1,6 +1,7 @@
 package manager;
 
 import api.FeatureDescription;
+import api.FeatureResource;
 import core.fx.FxUtil;
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
@@ -13,11 +14,13 @@ import sootup.core.views.View;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static manager.WholeProgramFX.getResourcePath;
+
 public class MethodFX implements MultiInstanceFX<MethodFeatureSet, MethodFEU> {
 
     private static final Set<String> NEED_VIEW = new HashSet<>(Set.of("IsMethodClassAbstract",
             "IsMethodClassFinal", "IsMethodClassInnerClass", "IsMethodThreadRun",
-            "MethodClassAccessModifier", "MethodParamIsInterface", "MethodCallsMethod", "MethodReturnTypeEquals"));
+            "MethodClassAccessModifier", "MethodParamIsInterface", "MethodCallsMethod"));
 
 
     @NonNull
@@ -51,31 +54,42 @@ public class MethodFX implements MultiInstanceFX<MethodFeatureSet, MethodFEU> {
     }
 
     @Override
-    public Set<MethodFeatureSet> getAllFeatures() {
+    public Set<MethodFeatureSet> getAllFeatures(List<FeatureResource> featureResources) {
         List<FeatureDescription> features = FxUtil.listAllMethodFeatures();
         List<String> names = features.stream().map(f -> f.getName()).collect(Collectors.toList());
-        return getFeatures(names);
+        return getFeatures(names, featureResources);
     }
 
     @Override
-    public Set<MethodFeatureSet> getAllFeaturesExclude(Set<String> exclusion) {
+    public Set<MethodFeatureSet> getAllFeaturesExclude(Set<String> exclusion, List<FeatureResource> featureResources) {
         List<FeatureDescription> features = FxUtil.listAllMethodFeatures();
         List<String> names = features.stream().map(f -> f.getName()).collect(Collectors.toList());
         names.removeAll(exclusion);
-        return getFeatures(names);
+        return getFeatures(names, featureResources);
     }
 
     @Override
-    public Set<MethodFeatureSet> getFeatures(List<String> featureExtractors) {
+    public Set<MethodFeatureSet> getFeatures(List<String> featureExtractors, List<FeatureResource> featureResources) {
         Set<MethodFEU> fxSet = new HashSet<>();
         for(String str: featureExtractors){
             Class<?> cls = null;
             MethodFEU newInstance = null;
             try{
                 cls = Class.forName("core.fx.methodbased." + str);
-                if(NEED_VIEW.stream().anyMatch(s -> s.equalsIgnoreCase(str))){
+
+                Optional<FeatureResource> featureResource = getResourcePath(featureResources, str);
+                if (List.of("MethodReturnTypeEquals", "MethodCallsMethod").contains(str) && featureResource.isPresent()) {
+                    String featureValue = featureResource.get().getFeatureValue();
+                    newInstance = (MethodFEU) cls.getConstructor(String.class, View.class).newInstance(featureValue, view);
+                }
+                else if(featureResource.isPresent()){
+                    String featureValue = featureResource.get().getFeatureValue();
+                    newInstance = (MethodFEU) cls.getConstructor(String.class).newInstance(featureValue);
+                }
+                else if(NEED_VIEW.stream().anyMatch(s -> s.equalsIgnoreCase(str))){
                     newInstance = (MethodFEU) cls.getConstructor(View.class).newInstance(view);
-                } else {
+                }
+                else {
                     newInstance = (MethodFEU) cls.newInstance();
                 }
             } catch (InstantiationException e){

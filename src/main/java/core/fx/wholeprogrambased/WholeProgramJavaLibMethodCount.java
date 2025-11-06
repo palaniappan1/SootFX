@@ -11,6 +11,7 @@ import sootup.core.views.View;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class WholeProgramJavaLibMethodCount implements WholeProgramFEU<Long> {
 
@@ -25,12 +26,10 @@ public class WholeProgramJavaLibMethodCount implements WholeProgramFEU<Long> {
     public Feature<Long> extract(CallGraph target) {
         Set<MethodSignature> methodSignatures = target.getMethodSignatures();
         Set<SootMethod> methods = new HashSet<>();
-
         methodSignatures.forEach(e -> view.getMethod(e).ifPresent(methods::add));
-
-        methods.stream().filter(m -> view.getClass(m.getDeclaringClassType())
-                .map(SootClass::isLibraryClass).orElse(false)).forEach(methods::add);
-
-        return new Feature<>(this.getClass().getSimpleName(), (long) methods.size());
+        long methodCount = methods.stream().filter(m -> view.getClass(m.getDeclaringClassType())
+                        .map(SootClass::isLibraryClass)
+                        .orElse(false)).collect(Collectors.toSet()).size();
+        return new Feature<>(this.getClass().getSimpleName(), methodCount);
     }
 }

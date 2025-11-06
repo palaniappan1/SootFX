@@ -44,8 +44,8 @@ public class CLI {
             throw new RuntimeException("usage: CLI \"path/to/app\" \"path/to/out\"");
         }else if(StringUtils.isEmpty(configPath)){
             // extract all features
-            methodFeatures(classPath, outPath, null, null);
-            classFeatures(classPath, outPath, null, null);
+            methodFeatures(classPath, outPath, null, null, null);
+            classFeatures(classPath, outPath, null, null, null);
             wpFeatures(classPath, outPath, androidJars,null, null, null);
 
             if(!StringUtils.isEmpty(androidJars) && classPath.endsWith(".apk")){
@@ -55,8 +55,8 @@ public class CLI {
         }else if(!StringUtils.isEmpty(configPath)){
             Config config = getConfig(configPath);
             List<FeatureResource> featureResources = config.getFeatureResources();
-            methodFeatures(classPath, outPath, config.getMethodFeatureInclusion(), config.getMethodFeatureExclusion());
-            classFeatures(classPath, outPath, config.getClassFeatureInclusion(), config.getClassFeatureExclusion());
+            methodFeatures(classPath, outPath, config.getMethodFeatureInclusion(), config.getMethodFeatureExclusion(), featureResources);
+            classFeatures(classPath, outPath, config.getClassFeatureInclusion(), config.getClassFeatureExclusion(), featureResources);
             wpFeatures(classPath, outPath, androidJars, config.getWholeProgFeatureInclusion(), config.getWholeProgFeatureExclusion(), featureResources);
             if(!StringUtils.isEmpty(androidJars) && classPath.endsWith(".apk")) {
                 manifestFeatures(classPath, outPath, androidJars, config.getManifestFeatureInclusion(), config.getManifestFeatureExclusion());
@@ -65,7 +65,7 @@ public class CLI {
     }
 
 
-    public static void methodFeatures(String path, String out, List<String> include, List<String> exclude) throws IOException {
+    public static void methodFeatures(String path, String out, List<String> include, List<String> exclude, List<FeatureResource> featureResources) throws IOException {
         if(include == null){
             return;
         }
@@ -74,18 +74,18 @@ public class CLI {
         sootFX.appOnly();
         Set<MethodFeatureSet> featureSets = null;
         if((include==null || include.isEmpty()) && (exclude==null || exclude.isEmpty())){
-            featureSets = sootFX.extractAllMethodFeatures();
+            featureSets = sootFX.extractAllMethodFeatures(featureResources);
         }else if(include==null || include.isEmpty()){
-            featureSets = sootFX.extractMethodFeaturesExclude(new HashSet<>(exclude));
+            featureSets = sootFX.extractMethodFeaturesExclude(new HashSet<>(exclude), featureResources);
         }else if(exclude==null || exclude.isEmpty()){
-            featureSets = sootFX.extractMethodFeaturesInclude(include);
+            featureSets = sootFX.extractMethodFeaturesInclude(include, featureResources);
         }else if(!include.isEmpty() && !exclude.isEmpty()){
             throw new RuntimeException("You must either provide methodFeatureInclusion or methodFeatureExclusion in config.yaml. \n Inclusion list only extracts the selected features. Exclusion list extracts all but the selected features.");
         }
         sootFX.printMultiSetToCSV(featureSets, out + "method.csv");
     }
 
-    public static void classFeatures(String path, String out, List<String> include, List<String> exclude) throws IOException {
+    public static void classFeatures(String path, String out, List<String> include, List<String> exclude, List<FeatureResource> featureResources) throws IOException {
         if(include == null){
             return;
         }
@@ -94,11 +94,11 @@ public class CLI {
         sootFX.appOnly();
         Set<ClassFeatureSet> featureSets = null;
         if((include==null || include.isEmpty()) && (exclude==null || exclude.isEmpty())){
-            featureSets = sootFX.extractAllClassFeatures();
+            featureSets = sootFX.extractAllClassFeatures(featureResources);
         }else if(include==null || include.isEmpty()){
-            featureSets = sootFX.extractClassFeaturesExclude(new HashSet<>(exclude));
+            featureSets = sootFX.extractClassFeaturesExclude(new HashSet<>(exclude), featureResources);
         }else if(exclude==null || exclude.isEmpty()){
-            featureSets = sootFX.extractClassFeaturesInclude(include);
+            featureSets = sootFX.extractClassFeaturesInclude(include, featureResources);
         }else if(!include.isEmpty() && !exclude.isEmpty()){
             throw new RuntimeException("You must either provide classFeatureInclusion or classFeatureExclusion in config.yaml. \n Inclusion list only extracts the selected features. Exclusion list extracts all but the selected features.");
         }
@@ -115,9 +115,9 @@ public class CLI {
         sootFX.appOnly();
         WholeProgramFeatureSet featureSet = null;
         if((include==null || include.isEmpty()) && (exclude==null || exclude.isEmpty())){
-            featureSet = sootFX.extractAllWholeProgramFeatures();
+            featureSet = sootFX.extractAllWholeProgramFeatures(featureResources);
         } else if(include==null || include.isEmpty()){
-            featureSet = sootFX.extractWholeProgramFeaturesExclude(new HashSet<>(exclude));
+            featureSet = sootFX.extractWholeProgramFeaturesExclude(new HashSet<>(exclude), featureResources);
         } else if(exclude==null || exclude.isEmpty()){
             featureSet = sootFX.extractWholeProgramFeaturesInclude(include, featureResources);
         }else if(!include.isEmpty() && !exclude.isEmpty()){
@@ -135,14 +135,7 @@ public class CLI {
         sootFX.appOnly();
         sootFX.androidJars(androidJars); // "/Users/user/Library/Android/sdk/platforms"
         ManifestFeatureSet featureSet = null;
-//        if((include==null || include.isEmpty()) && (exclude==null || exclude.isEmpty())){
-//            featureSet = sootFX.extractAllManifestFeatures();
-//        } else if(include==null || include.isEmpty()){
-//            featureSet = sootFX.extractManifestFeaturesExclude(new HashSet<>(exclude));
-//        }
-//        if(exclude==null || exclude.isEmpty()){
-//            featureSet = sootFX.extractManifestFeaturesInclude(include);
-//        }
+
         if(!include.isEmpty() && !exclude.isEmpty()){
             throw new RuntimeException("You must either provide manifestFeatureInclusion or manifestFeatureExclusion in config.yaml. \n Inclusion list only extracts the selected features. Exclusion list extracts all but the selected features.");
         }

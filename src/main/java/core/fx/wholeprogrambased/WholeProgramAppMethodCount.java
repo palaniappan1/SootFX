@@ -28,9 +28,7 @@ public class WholeProgramAppMethodCount implements WholeProgramFEU<Long> {
     public Feature<Long> extract(CallGraph target) {
         Set<MethodSignature> methodSignatures = target.getMethodSignatures();
         Set<SootMethod> methods = new HashSet<>();
-
         methodSignatures.forEach(e -> view.getMethod(e).filter(FxUtil::isAppMethod).ifPresent(methods::add));
-
         long methodCount = methods.size();
         return new Feature<>(this.getClass().getSimpleName(), methodCount);
     }
