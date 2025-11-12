@@ -7,14 +7,15 @@ import sootup.core.model.SootMethod;
 
 public class MethodClassNameContains implements MethodFEU<Boolean> {
 
-    String value;
+  String value;
 
-    public MethodClassNameContains(String value) {
-        this.value = value;
-    }
+  public MethodClassNameContains(String value) {
+    this.value = value;
+  }
 
-    @Override
-    public Feature<Boolean> extract(SootMethod target) {
-        return new Feature<>(getName(value), Strings.CI.contains(target.getDeclaringClassType().getClassName(), value));
-    }
+  @Override
+  public Feature<Boolean> extract(SootMethod target) {
+    return new Feature<>(
+        getName(value), Strings.CI.contains(target.getDeclaringClassType().getClassName(), value));
+  }
 }

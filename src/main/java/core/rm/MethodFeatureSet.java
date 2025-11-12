@@ -5,19 +5,19 @@ import sootup.core.model.SootMethod;
 
 public class MethodFeatureSet extends AbstractFeatureSet {
 
-    private SootMethod sootMethod;
+  private SootMethod sootMethod;
 
-    public MethodFeatureSet(SootMethod sootMethod){
-        this.sootMethod = sootMethod;
-        this.features = new TreeSet<>();
-    }
+  public MethodFeatureSet(SootMethod sootMethod) {
+    this.sootMethod = sootMethod;
+    this.features = new TreeSet<>();
+  }
 
-    @Override
-    public String getSignature() {
-        return sootMethod.getSignature().toString();
-    }
+  @Override
+  public String getSignature() {
+    return sootMethod.getSignature().toString();
+  }
 
-    public SootMethod getMethod(){
-        return sootMethod;
-    }
+  public SootMethod getMethod() {
+    return sootMethod;
+  }
 }

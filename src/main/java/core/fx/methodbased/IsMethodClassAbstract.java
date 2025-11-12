@@ -8,17 +8,16 @@ import sootup.core.views.View;
 
 public class IsMethodClassAbstract implements MethodFEU<Boolean> {
 
-    @NonNull
-    private final View view;
+  @NonNull private final View view;
 
-    public IsMethodClassAbstract(View view) {
-        this.view = view;
-    }
+  public IsMethodClassAbstract(View view) {
+    this.view = view;
+  }
 
-    @Override
-    public Feature<Boolean> extract(SootMethod target) {
-        var clsOpt = view.getClass(target.getDeclaringClassType());
-        boolean isAbstract = clsOpt.isPresent() && clsOpt.get().isAbstract();
-        return new Feature<>(getName(), isAbstract);
-    }
+  @Override
+  public Feature<Boolean> extract(SootMethod target) {
+    var clsOpt = view.getClass(target.getDeclaringClassType());
+    boolean isAbstract = clsOpt.isPresent() && clsOpt.get().isAbstract();
+    return new Feature<>(getName(), isAbstract);
+  }
 }

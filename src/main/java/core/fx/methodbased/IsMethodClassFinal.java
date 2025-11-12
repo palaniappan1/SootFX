@@ -8,18 +8,16 @@ import sootup.core.views.View;
 
 public class IsMethodClassFinal implements MethodFEU<Boolean> {
 
-    @NonNull
-    private final View view;
+  @NonNull private final View view;
 
-    public IsMethodClassFinal(View view) {
-        this.view = view;
-    }
+  public IsMethodClassFinal(View view) {
+    this.view = view;
+  }
 
-    @Override
-    public Feature<Boolean> extract(SootMethod target) {
-        var clsOpt = view.getClass(target.getDeclaringClassType());
-        boolean isStatic = clsOpt.isPresent() && clsOpt.get().isStatic();
-        return new Feature<>(getName(), isStatic);
-    }
-
+  @Override
+  public Feature<Boolean> extract(SootMethod target) {
+    var clsOpt = view.getClass(target.getDeclaringClassType());
+    boolean isFinal = clsOpt.isPresent() && clsOpt.get().isFinal();
+    return new Feature<>(getName(), isFinal);
+  }
 }

@@ -7,13 +7,13 @@ import sootup.core.model.SootMethod;
 
 public class MethodBranchCount implements MethodFEU<Long> {
 
-    @Override
-    public Feature<Long> extract(SootMethod method) {
-        Long count = -1l;
+  @Override
+  public Feature<Long> extract(SootMethod method) {
+    Long count = -1l;
 
-        if(method.hasBody()){
-            count = method.getBody().getStmts().stream().filter(Stmt::branches).count();
-        }
-        return new Feature<>(getName(), count);
+    if (method.hasBody()) {
+      count = method.getBody().getStmts().stream().filter(Stmt::branches).count();
     }
+    return new Feature<>(getName(), count);
+  }
 }

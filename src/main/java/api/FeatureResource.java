@@ -2,22 +2,22 @@ package api;
 
 public class FeatureResource {
 
-    private String featureName;
-    private String featureValue;
+  private String featureName;
+  private String featureValue;
 
-    public String getFeatureName() {
-        return featureName;
-    }
+  public String getFeatureName() {
+    return featureName;
+  }
 
-    public void setFeatureName(String featureName) {
-        this.featureName = featureName;
-    }
+  public void setFeatureName(String featureName) {
+    this.featureName = featureName;
+  }
 
-    public String getFeatureValue() {
-        return featureValue;
-    }
+  public String getFeatureValue() {
+    return featureValue;
+  }
 
-    public void setFeatureValue(String featureValue) {
-        this.featureValue = featureValue;
-    }
+  public void setFeatureValue(String featureValue) {
+    this.featureValue = featureValue;
+  }
 }

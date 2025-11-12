@@ -6,12 +6,12 @@ import sootup.core.model.SootMethod;
 
 public class MethodReturnsVoidStartsWithOn implements MethodFEU<Boolean> {
 
-
-    @Override
-    public Feature<Boolean> extract(SootMethod target) {
-        boolean holds = target.getName().startsWith("on")
-                && (target.getReturnType().toString().equals("void")
+  @Override
+  public Feature<Boolean> extract(SootMethod target) {
+    boolean holds =
+        target.getName().startsWith("on")
+            && (target.getReturnType().toString().equals("void")
                 || target.getReturnType().toString().equals("boolean"));
-        return new Feature<>(getName(), holds);
-    }
+    return new Feature<>(getName(), holds);
+  }
 }

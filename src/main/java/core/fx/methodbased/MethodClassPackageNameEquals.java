@@ -7,14 +7,16 @@ import sootup.core.model.SootMethod;
 
 public class MethodClassPackageNameEquals implements MethodFEU<Boolean> {
 
-    String value;
+  String value;
 
-    public MethodClassPackageNameEquals(String value) {
-        this.value = value;
-    }
+  public MethodClassPackageNameEquals(String value) {
+    this.value = value;
+  }
 
-    @Override
-    public Feature<Boolean> extract(SootMethod target) {
-        return new Feature<>(getName(value), Strings.CI.contains(target.getDeclaringClassType().getPackageName().toString(), value));
-    }
+  @Override
+  public Feature<Boolean> extract(SootMethod target) {
+    return new Feature<>(
+        getName(value),
+        Strings.CI.contains(target.getDeclaringClassType().getPackageName().toString(), value));
+  }
 }

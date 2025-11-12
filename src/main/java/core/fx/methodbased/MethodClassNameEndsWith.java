@@ -7,14 +7,15 @@ import sootup.core.model.SootMethod;
 
 public class MethodClassNameEndsWith implements MethodFEU<Boolean> {
 
-    private String value;
+  private String value;
 
-    public MethodClassNameEndsWith(String value) {
-        this.value = value;
-    }
+  public MethodClassNameEndsWith(String value) {
+    this.value = value;
+  }
 
-    @Override
-    public Feature<Boolean> extract(SootMethod target) {
-        return new Feature<>(getName(value), Strings.CI.contains(target.getDeclaringClassType().getClassName(), value));
-    }
+  @Override
+  public Feature<Boolean> extract(SootMethod target) {
+    return new Feature<>(
+        getName(value), Strings.CI.endsWith(target.getDeclaringClassType().getClassName(), value));
+  }
 }

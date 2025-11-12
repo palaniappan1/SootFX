@@ -7,14 +7,15 @@ import sootup.core.model.SootClass;
 
 public class ClassPackageNameEquals implements ClassFEU<Boolean> {
 
-    String value;
+  String value;
 
-    public ClassPackageNameEquals(String value){
-        this.value = value;
-    }
+  public ClassPackageNameEquals(String value) {
+    this.value = value;
+  }
 
-    @Override
-    public Feature<Boolean> extract(SootClass target) {
-        return new Feature<>(getName(value), Strings.CI.equals(target.getType().getPackageName().toString(), value));
-    }
+  @Override
+  public Feature<Boolean> extract(SootClass target) {
+    return new Feature<>(
+        getName(value), Strings.CI.equals(target.getType().getPackageName().toString(), value));
+  }
 }

@@ -8,17 +8,16 @@ import sootup.core.views.View;
 
 public class IsMethodClassInnerClass implements MethodFEU<Boolean> {
 
-    @NonNull
-    private final View view;
+  @NonNull private final View view;
 
-    public IsMethodClassInnerClass(View view) {
-        this.view = view;
-    }
+  public IsMethodClassInnerClass(View view) {
+    this.view = view;
+  }
 
-    @Override
-    public Feature<Boolean> extract(SootMethod target) {
-        var clsOpt = view.getClass(target.getDeclaringClassType());
-        boolean hasOuterClass = clsOpt.isPresent() && clsOpt.get().hasOuterClass();
-        return new Feature<>(getName(), hasOuterClass);
-    }
+  @Override
+  public Feature<Boolean> extract(SootMethod target) {
+    var clsOpt = view.getClass(target.getDeclaringClassType());
+    boolean hasOuterClass = clsOpt.isPresent() && clsOpt.get().hasOuterClass();
+    return new Feature<>(getName(), hasOuterClass);
+  }
 }

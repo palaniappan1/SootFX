@@ -6,8 +6,8 @@ import sootup.core.model.SootMethod;
 
 public class IsMethodStatic implements MethodFEU<Boolean> {
 
-    @Override
-    public Feature<Boolean> extract(SootMethod target) {
-        return new Feature<>(getName(), target.isStatic());
-    }
+  @Override
+  public Feature<Boolean> extract(SootMethod target) {
+    return new Feature<>(getName(), target.isStatic());
+  }
 }

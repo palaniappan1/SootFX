@@ -7,14 +7,14 @@ import sootup.core.model.SootClass;
 
 public class ClassNameContains implements ClassFEU<Boolean> {
 
-    String value;
+  String value;
 
-    public ClassNameContains(String value) {
-        this.value = value;
-    }
+  public ClassNameContains(String value) {
+    this.value = value;
+  }
 
-    @Override
-    public Feature<Boolean> extract(SootClass target) {
-        return new Feature<>(getName(value), Strings.CI.contains(target.getName(), value));
-    }
+  @Override
+  public Feature<Boolean> extract(SootClass target) {
+    return new Feature<>(getName(value), Strings.CI.contains(target.getName(), value));
+  }
 }

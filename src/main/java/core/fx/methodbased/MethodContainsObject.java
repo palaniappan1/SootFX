@@ -7,18 +7,18 @@ import sootup.core.model.SootMethod;
 
 public class MethodContainsObject implements MethodFEU<Boolean> {
 
-    String value;
+  String value;
 
-    public MethodContainsObject(String value) {
-        this.value = value;
-    }
+  public MethodContainsObject(String value) {
+    this.value = value;
+  }
 
-    @Override
-    public Feature<Boolean> extract(SootMethod target) {
-        boolean contains = false;
-        if(target.hasBody()){
-            contains = Strings.CI.contains(target.getBody().toString(), value);
-        }
-        return new Feature<>(getName(), contains);
+  @Override
+  public Feature<Boolean> extract(SootMethod target) {
+    boolean contains = false;
+    if (target.hasBody()) {
+      contains = Strings.CI.contains(target.getBody().toString(), value);
     }
+    return new Feature<>(getName(), contains);
+  }
 }

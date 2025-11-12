@@ -1,15 +1,14 @@
 package core.fx.base;
 
+public interface FeatureExtractionUnit<V, T> {
 
-public interface FeatureExtractionUnit<V,T> {
+  default String getName() {
+    return this.getClass().getSimpleName();
+  }
 
-    default String getName(){
-        return this.getClass().getSimpleName();
-    }
+  default String getName(String value) {
+    return String.format("%s(\"%s\")", getName(), value);
+  }
 
-    default String getName(String value){
-        return String.format("%s(\"%s\")", getName(), value);
-    }
-
-    Feature<V> extract(T target);
+  Feature<V> extract(T target);
 }

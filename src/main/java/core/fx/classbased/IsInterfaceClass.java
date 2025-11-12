@@ -6,8 +6,8 @@ import sootup.core.model.SootClass;
 
 public class IsInterfaceClass implements ClassFEU<Boolean> {
 
-    @Override
-    public Feature<Boolean> extract(SootClass target) {
-        return new Feature<>(getName(), target.isInterface());
-    }
+  @Override
+  public Feature<Boolean> extract(SootClass target) {
+    return new Feature<>(getName(), target.isInterface());
+  }
 }

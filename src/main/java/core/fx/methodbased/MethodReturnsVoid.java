@@ -5,8 +5,8 @@ import core.fx.base.MethodFEU;
 import sootup.core.model.SootMethod;
 
 public class MethodReturnsVoid implements MethodFEU<Boolean> {
-    @Override
-    public Feature<Boolean> extract(SootMethod target) {
-        return new Feature<>(getName(), target.getReturnType().toString().equals("void"));
-    }
+  @Override
+  public Feature<Boolean> extract(SootMethod target) {
+    return new Feature<>(getName(), target.getReturnType().toString().equals("void"));
+  }
 }

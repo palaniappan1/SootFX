@@ -6,9 +6,8 @@ import sootup.core.model.SootClass;
 
 public class ClassFieldCount implements ClassFEU<Integer> {
 
-    @Override
-    public Feature<Integer> extract(SootClass target) {
-        return new Feature<>(getName(), target.getFields().size());
-    }
-
+  @Override
+  public Feature<Integer> extract(SootClass target) {
+    return new Feature<>(getName(), target.getFields().size());
+  }
 }

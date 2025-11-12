@@ -1,20 +1,19 @@
 package core.rm;
 
- import sootup.core.model.SootClass;
-
- import java.util.TreeSet;
+import java.util.TreeSet;
+import sootup.core.model.SootClass;
 
 public class ClassFeatureSet extends AbstractFeatureSet {
 
-    private SootClass sootClass;
+  private SootClass sootClass;
 
-    public ClassFeatureSet(SootClass sootClass){
-        this.sootClass = sootClass;
-        this.features = new TreeSet<>();
-    }
+  public ClassFeatureSet(SootClass sootClass) {
+    this.sootClass = sootClass;
+    this.features = new TreeSet<>();
+  }
 
-    @Override
-    public String getSignature() {
-        return sootClass.getName();
-    }
+  @Override
+  public String getSignature() {
+    return sootClass.getName();
+  }
 }

@@ -6,8 +6,8 @@ import sootup.core.model.SootMethod;
 
 public class IsMethodNative implements MethodFEU<Boolean> {
 
-    @Override
-    public Feature<Boolean> extract(SootMethod target) {
-        return new Feature<>(getName(), target.isNative());
-    }
+  @Override
+  public Feature<Boolean> extract(SootMethod target) {
+    return new Feature<>(getName(), target.isNative());
+  }
 }

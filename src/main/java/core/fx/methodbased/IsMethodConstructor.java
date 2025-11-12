@@ -5,9 +5,9 @@ import core.fx.base.MethodFEU;
 import sootup.core.model.SootMethod;
 
 public class IsMethodConstructor implements MethodFEU<Boolean> {
-    @Override
-    public Feature<Boolean> extract(SootMethod target) {
-        return new Feature<>(getName(), target.getName().equals("<init>")
-                || target.getName().equals("<clinit>"));
-    }
+  @Override
+  public Feature<Boolean> extract(SootMethod target) {
+    return new Feature<>(
+        getName(), target.getName().equals("<init>") || target.getName().equals("<clinit>"));
+  }
 }
