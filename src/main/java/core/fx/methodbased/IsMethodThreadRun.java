@@ -1,25 +1,33 @@
 package core.fx.methodbased;
 
+import core.fx.FxUtil;
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
-import core.fx.FxUtil;
-import soot.SootMethod;
+import org.jspecify.annotations.NonNull;
+import sootup.core.model.SootMethod;
+import sootup.core.views.View;
 
 public class IsMethodThreadRun implements MethodFEU<Boolean> {
 
-    @Override
-    public Feature<Boolean> extract(SootMethod target) {
-        boolean isThreadRun = false;
-        if (target.getName().equals("run")) {
-            try {
-                if (FxUtil.isOfType(target.getDeclaringClass().getType(), "java.lang.Runnable")) {
-                    isThreadRun = true;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+  @NonNull private final View view;
 
-        return new Feature<>(getName(), isThreadRun);
+  public IsMethodThreadRun(View view) {
+    this.view = view;
+  }
+
+  @Override
+  public Feature<Boolean> extract(SootMethod target) {
+    boolean isThreadRun = false;
+    if (target.getName().equals("run")) {
+      try {
+        if (FxUtil.isOfType(view, target.getDeclaringClassType(), "java.lang.Runnable")) {
+          isThreadRun = true;
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
+
+    return new Feature<>(getName(), isThreadRun);
+  }
 }

@@ -1,39 +1,36 @@
 package core.fx.wholeprogrambased;
 
-import com.google.common.collect.Streams;
 import core.fx.base.Feature;
 import core.fx.base.WholeProgramFEU;
-import resource.FileConnector;
-import soot.SootMethod;
-import soot.jimple.toolkits.callgraph.CallGraph;
-import soot.jimple.toolkits.callgraph.Edge;
-
 import java.util.*;
-import java.util.stream.Stream;
+import org.jspecify.annotations.NonNull;
+import resource.FileConnector;
+import sootup.callgraph.CallGraph;
+import sootup.core.signatures.MethodSignature;
+import sootup.core.views.View;
 
 public class WholeProgramAPICallCount implements WholeProgramFEU<Map<String, Long>> {
 
-    private List<String> methodSignatures;
+  private List<String> methodSignatures;
 
-    public WholeProgramAPICallCount(String resourcePath) {
-        this.methodSignatures = FileConnector.getMethodSignatures(resourcePath);
-    }
+  @NonNull private final View view;
 
-    @Override
-    public Feature<Map<String, Long>> extract(CallGraph target) {
-        Iterator<Edge> iterator = target.iterator();
-        Map<String, Long> methodCount = new HashMap<>();
-        Stream<Edge> stream = Streams.stream(iterator);
-        stream.forEach(e-> {
-            if(methodSignatures.contains(e.tgt().getSignature())){
-                if(methodCount.containsKey(e.tgt().getSignature())){
-                    Long count = methodCount.get(e.tgt().getSignature());
-                    methodCount.put(e.tgt().getSignature(), ++count);
-                }else{
-                    methodCount.put(e.tgt().getSignature(), 1L);
-                }
-            }
+  public WholeProgramAPICallCount(String resourcePath, View view) {
+    this.methodSignatures = FileConnector.getMethodSignatures(resourcePath);
+    this.view = view;
+  }
+
+  @Override
+  public Feature<Map<String, Long>> extract(CallGraph target) {
+    Set<MethodSignature> sootMethodSignatures = target.getMethodSignatures();
+    Map<String, Long> methodCount = new HashMap<>();
+    sootMethodSignatures.forEach(
+        e -> {
+          if (methodSignatures.contains(e.toString())) {
+            Long count = methodCount.getOrDefault(e.toString(), 0L);
+            methodCount.put(e.toString(), count + 1);
+          }
         });
-        return new Feature<>(this.getClass().getSimpleName(), methodCount);
-    }
+    return new Feature<>(this.getClass().getSimpleName(), methodCount);
+  }
 }

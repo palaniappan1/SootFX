@@ -2,20 +2,20 @@ package core.fx.classbased;
 
 import core.fx.base.ClassFEU;
 import core.fx.base.Feature;
-import soot.SootClass;
+import sootup.core.model.SootClass;
 
-public class ClassContainsField implements ClassFEU<Integer> {
+public class ClassContainsField implements ClassFEU<Boolean> {
 
-    private String value;
+  private String value;
 
-    public ClassContainsField(String value) {
-        this.value = value;
-    }
+  public ClassContainsField(String value) {
+    this.value = value;
+  }
 
-    @Override
-    public Feature<Integer> extract(SootClass target) {
-        target.getFields().forEach(field -> field.getName().contains(value));
-        return new Feature<>(getName(), target.getMethods().size());
-    }
-
+  @Override
+  public Feature<Boolean> extract(SootClass target) {
+    Boolean containsField =
+        target.getFields().stream().anyMatch(field -> field.getName().contains(value));
+    return new Feature<>(getName(), containsField);
+  }
 }

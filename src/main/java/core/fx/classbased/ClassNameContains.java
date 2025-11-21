@@ -2,19 +2,19 @@ package core.fx.classbased;
 
 import core.fx.base.ClassFEU;
 import core.fx.base.Feature;
-import org.apache.commons.lang3.StringUtils;
-import soot.SootClass;
+import org.apache.commons.lang3.Strings;
+import sootup.core.model.SootClass;
 
 public class ClassNameContains implements ClassFEU<Boolean> {
 
-    String value;
+  String value;
 
-    public ClassNameContains(String value) {
-        this.value = value;
-    }
+  public ClassNameContains(String value) {
+    this.value = value;
+  }
 
-    @Override
-    public Feature<Boolean> extract(SootClass target) {
-        return new Feature<>(getName(value), StringUtils.containsIgnoreCase(target.getName(), value));
-    }
+  @Override
+  public Feature<Boolean> extract(SootClass target) {
+    return new Feature<>(getName(value), Strings.CI.contains(target.getName(), value));
+  }
 }

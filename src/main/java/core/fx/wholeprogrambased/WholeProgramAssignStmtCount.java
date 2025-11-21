@@ -2,28 +2,35 @@ package core.fx.wholeprogrambased;
 
 import core.fx.base.Feature;
 import core.fx.base.WholeProgramFEU;
-import soot.Body;
-import soot.SootMethod;
-import soot.jimple.AssignStmt;
-import soot.jimple.toolkits.callgraph.CallGraph;
-import soot.jimple.toolkits.callgraph.Edge;
-
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
+import org.jspecify.annotations.NonNull;
+import sootup.callgraph.CallGraph;
+import sootup.core.jimple.common.stmt.JAssignStmt;
+import sootup.core.model.SootMethod;
+import sootup.core.signatures.MethodSignature;
+import sootup.core.views.View;
 
 public class WholeProgramAssignStmtCount implements WholeProgramFEU<Long> {
 
-    @Override
-    public Feature<Long> extract(CallGraph target) {
-        Iterator<Edge> iterator = target.iterator();
-        Set<SootMethod> methods = new HashSet<>();
-        while(iterator.hasNext()){
-            Edge edge = iterator.next();
-            methods.add(edge.src());
-            methods.add(edge.tgt());
-        }
-        long unitCount = methods.stream().filter(SootMethod::hasActiveBody).map(SootMethod::getActiveBody).map(Body::getUnits).filter(u->u instanceof AssignStmt).count();
-        return new Feature<>(this.getClass().getSimpleName(), unitCount);
-    }
+  @NonNull private final View view;
+
+  public WholeProgramAssignStmtCount(View view) {
+    this.view = view;
+  }
+
+  @Override
+  public Feature<Long> extract(CallGraph target) {
+    Set<MethodSignature> methodSignatures = target.getMethodSignatures();
+    Set<SootMethod> methods = new HashSet<>();
+    methodSignatures.forEach(e -> view.getMethod(e).ifPresent(methods::add));
+    long unitCount =
+        methods.stream()
+            .filter(SootMethod::hasBody)
+            .map(SootMethod::getBody)
+            .flatMap(body -> body.getStmts().stream())
+            .filter(JAssignStmt.class::isInstance)
+            .count();
+    return new Feature<>(this.getClass().getSimpleName(), unitCount);
+  }
 }

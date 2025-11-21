@@ -3,20 +3,18 @@ package manager;
 import api.FeatureResource;
 import core.fx.base.FeatureExtractionUnit;
 import core.rm.AbstractFeatureSet;
-
 import java.util.List;
 import java.util.Set;
 
 public interface SingleInstanceFX<S extends AbstractFeatureSet, E extends FeatureExtractionUnit> {
 
-    S getFeatures(Set<E> featureExtractors);
+  S getFeatures(Set<E> featureExtractors);
 
-    S getAllFeatures();
+  S getAllFeatures(List<FeatureResource> featureResources);
 
-    S getAllFeaturesExclude(Set<String> exclusion);
+  S getAllFeaturesExclude(Set<String> exclusion, List<FeatureResource> featureResources);
 
-    S getFeatures(List<String> featureExtractors);
+  //    S getFeatures(List<String> featureExtractors);
 
-    S getFeatures(List<String> featureExtractors, List<FeatureResource> featureResources);
-
+  S getFeatures(List<String> featureExtractors, List<FeatureResource> featureResources);
 }

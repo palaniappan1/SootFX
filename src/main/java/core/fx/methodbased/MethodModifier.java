@@ -1,4 +1,3 @@
 package core.fx.methodbased;
 
-public class MethodModifier {
-}
+public class MethodModifier {}

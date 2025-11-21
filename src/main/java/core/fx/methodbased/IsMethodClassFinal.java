@@ -2,12 +2,22 @@ package core.fx.methodbased;
 
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
-import soot.SootMethod;
+import org.jspecify.annotations.NonNull;
+import sootup.core.model.SootMethod;
+import sootup.core.views.View;
 
 public class IsMethodClassFinal implements MethodFEU<Boolean> {
 
-    @Override
-    public Feature<Boolean> extract(SootMethod target) {
-        return new Feature<>(getName(), target.getDeclaringClass().isStatic());
-    }
+  @NonNull private final View view;
+
+  public IsMethodClassFinal(View view) {
+    this.view = view;
+  }
+
+  @Override
+  public Feature<Boolean> extract(SootMethod target) {
+    var clsOpt = view.getClass(target.getDeclaringClassType());
+    boolean isFinal = clsOpt.isPresent() && clsOpt.get().isFinal();
+    return new Feature<>(getName(), isFinal);
+  }
 }

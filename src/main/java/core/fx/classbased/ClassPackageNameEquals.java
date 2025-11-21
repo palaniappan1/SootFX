@@ -2,19 +2,20 @@ package core.fx.classbased;
 
 import core.fx.base.ClassFEU;
 import core.fx.base.Feature;
-import org.apache.commons.lang3.StringUtils;
-import soot.SootClass;
+import org.apache.commons.lang3.Strings;
+import sootup.core.model.SootClass;
 
 public class ClassPackageNameEquals implements ClassFEU<Boolean> {
 
-    String value;
+  String value;
 
-    public ClassPackageNameEquals(String value){
-        this.value = value;
-    }
+  public ClassPackageNameEquals(String value) {
+    this.value = value;
+  }
 
-    @Override
-    public Feature<Boolean> extract(SootClass target) {
-        return new Feature<>(getName(value), StringUtils.equalsIgnoreCase(target.getPackageName(), value));
-    }
+  @Override
+  public Feature<Boolean> extract(SootClass target) {
+    return new Feature<>(
+        getName(value), Strings.CI.equals(target.getType().getPackageName().toString(), value));
+  }
 }

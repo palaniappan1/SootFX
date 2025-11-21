@@ -2,60 +2,62 @@ package core.fx.methodbased;
 
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
-import soot.SootMethod;
-import soot.Unit;
-import soot.Value;
-import soot.jimple.AssignStmt;
-import soot.jimple.InvokeExpr;
-import soot.jimple.ReturnStmt;
-import soot.jimple.Stmt;
-
 import java.util.HashSet;
 import java.util.Set;
+import sootup.core.jimple.basic.Value;
+import sootup.core.jimple.common.expr.AbstractInvokeExpr;
+import sootup.core.jimple.common.stmt.InvokableStmt;
+import sootup.core.jimple.common.stmt.JAssignStmt;
+import sootup.core.jimple.common.stmt.JReturnStmt;
+import sootup.core.jimple.common.stmt.Stmt;
+import sootup.core.model.SootMethod;
 
 public class MethodCallFlowsToReturn implements MethodFEU<Boolean> {
 
-    String value;
+  String value;
 
-    public MethodCallFlowsToReturn(String value) {
-        this.value = value;
-    }
+  public MethodCallFlowsToReturn(String value) {
+    this.value = value;
+  }
 
-    @Override
-    public Feature<Boolean> extract(SootMethod sm) {
-        if (sm.isConcrete()){
-            Set<Value> paramVals = new HashSet<Value>();
+  @Override
+  public Feature<Boolean> extract(SootMethod sm) {
+    if (sm.isConcrete()) {
+      Set<Value> paramVals = new HashSet<Value>();
 
-            for (Unit u : sm.retrieveActiveBody().getUnits()) {
-                // Check for invocations
-                if (((Stmt) u).containsInvokeExpr()) {
-                    InvokeExpr invokeExpr = ((Stmt) u).getInvokeExpr();
-                    Value leftOp = null;
-                    if (u instanceof AssignStmt) leftOp = ((AssignStmt) u).getLeftOp();
-                    if (leftOp != null) paramVals.add(leftOp);
-                    // TODO: Add arguments as well? Not sure.
-                    if (invokeExpr.getMethod().getName().toLowerCase()
-                            .contains(value.toLowerCase())) {
-                        paramVals.addAll(invokeExpr.getArgs());
-                    }
-                }
-
-                if (u instanceof AssignStmt) {
-                    Value leftOp = ((AssignStmt) u).getLeftOp();
-                    Value rightOp = ((AssignStmt) u).getRightOp();
-                    if (paramVals.contains(leftOp)) paramVals.remove(leftOp);
-                    if (paramVals.contains(rightOp)) {
-                        paramVals.add(leftOp);
-                    }
-                }
-
-                // Check for invocations
-                if (u instanceof ReturnStmt) {
-                    ReturnStmt stmt = (ReturnStmt) u;
-                    return new Feature<>(getName(value), paramVals.contains(stmt.getOp()));
-                }
-            }
+      for (Stmt u : sm.getBody().getStmts()) {
+        // Check for invocations
+        if (u instanceof InvokableStmt && ((InvokableStmt) u).getInvokeExpr().isPresent()) {
+          AbstractInvokeExpr invokeExpr = ((InvokableStmt) u).getInvokeExpr().get();
+          Value leftOp = null;
+          if (u instanceof JAssignStmt) leftOp = ((JAssignStmt) u).getLeftOp();
+          if (leftOp != null) paramVals.add(leftOp);
+          // TODO: Add arguments as well? Not sure.
+          if (invokeExpr
+              .getMethodSignature()
+              .getName()
+              .toLowerCase()
+              .contains(value.toLowerCase())) {
+            paramVals.addAll(invokeExpr.getArgs());
+          }
         }
-        return new Feature<>(getName(value), false);
+
+        if (u instanceof JAssignStmt) {
+          Value leftOp = ((JAssignStmt) u).getLeftOp();
+          Value rightOp = ((JAssignStmt) u).getRightOp();
+          if (paramVals.contains(leftOp)) paramVals.remove(leftOp);
+          if (paramVals.contains(rightOp)) {
+            paramVals.add(leftOp);
+          }
+        }
+
+        // Check for invocations
+        if (u instanceof JReturnStmt) {
+          JReturnStmt stmt = (JReturnStmt) u;
+          return new Feature<>(getName(value), paramVals.contains(stmt.getOp()));
+        }
+      }
     }
+    return new Feature<>(getName(value), false);
+  }
 }

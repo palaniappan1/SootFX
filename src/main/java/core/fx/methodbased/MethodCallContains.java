@@ -2,39 +2,37 @@ package core.fx.methodbased;
 
 import core.fx.base.Feature;
 import core.fx.base.MethodFEU;
-import org.apache.commons.lang3.StringUtils;
-import soot.SootMethod;
-import soot.Unit;
-import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.Stmt;
+import org.apache.commons.lang3.Strings;
+import sootup.core.jimple.common.expr.AbstractInstanceInvokeExpr;
+import sootup.core.jimple.common.expr.AbstractInvokeExpr;
+import sootup.core.jimple.common.stmt.InvokableStmt;
+import sootup.core.jimple.common.stmt.Stmt;
+import sootup.core.model.SootMethod;
 
 public class MethodCallContains implements MethodFEU<Boolean> {
 
-    private String value;
+  private String value;
 
-    public MethodCallContains(String value) {
-        this.value = value;
-    }
+  public MethodCallContains(String value) {
+    this.value = value;
+  }
 
-    @Override
-    public Feature<Boolean> extract(SootMethod target) {
-        boolean contains = false;
-        if (target.isConcrete()) {
-            for (Unit u : target.getActiveBody().getUnits()) {
-                if (u instanceof Stmt) {
-                    Stmt stmt = (Stmt) u;
-                    if (stmt.containsInvokeExpr()) {
-                        if (stmt.getInvokeExpr() instanceof InstanceInvokeExpr) {
-                            InstanceInvokeExpr iinv = (InstanceInvokeExpr) stmt.getInvokeExpr();
-                            if (StringUtils.containsIgnoreCase(iinv.getMethod().getName(), value)) {
-                                contains = true;
-                                break;
-                            }
-                        }
-                    }
-                }
+  @Override
+  public Feature<Boolean> extract(SootMethod target) {
+    boolean contains = false;
+    if (target.isConcrete()) {
+      for (Stmt u : target.getBody().getStmts()) {
+        if (u instanceof InvokableStmt && ((InvokableStmt) u).getInvokeExpr().isPresent()) {
+          AbstractInvokeExpr invokeExpr = ((InvokableStmt) u).getInvokeExpr().get();
+          if (invokeExpr instanceof AbstractInstanceInvokeExpr) {
+            if (Strings.CI.contains(invokeExpr.getMethodSignature().getName(), value)) {
+              contains = true;
+              break;
             }
+          }
         }
-        return new Feature<>(getName(value), contains);
+      }
     }
+    return new Feature<>(getName(value), contains);
+  }
 }
