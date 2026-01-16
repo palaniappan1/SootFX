@@ -2,11 +2,14 @@ package resource;
 
 import org.apache.commons.lang3.StringUtils;
 import soot.G;
-import soot.JastAddJ.Opt;
 import soot.Scene;
+import soot.jimple.infoflow.InfoflowConfiguration;
+import soot.jimple.infoflow.android.InfoflowAndroidConfiguration;
+import soot.jimple.infoflow.android.SetupApplication;
 import soot.jimple.toolkits.callgraph.CHATransformer;
 import soot.options.Options;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,6 +45,13 @@ public class SootConnector {
         opt.put("vta","true");
         //opt.put("apponly","true");
         //SparkTransformer.v().transform("", opt);
-        CHATransformer.v().transform();
+//        CHATransformer.v().transform();
+        InfoflowAndroidConfiguration infoflowAndroidConfiguration = new InfoflowAndroidConfiguration();
+        infoflowAndroidConfiguration.setMergeDexFiles(true);
+        infoflowAndroidConfiguration.setCallgraphAlgorithm(InfoflowConfiguration.CallgraphAlgorithm.CHA);
+        infoflowAndroidConfiguration.setDataFlowDirection(InfoflowConfiguration.DataFlowDirection.Forwards);
+        infoflowAndroidConfiguration.getAnalysisFileConfig().setAndroidPlatformDir(new File(androidJars));
+        infoflowAndroidConfiguration.getAnalysisFileConfig().setTargetAPKFile(new File(classPaths.get(0)));
+        new SetupApplication(infoflowAndroidConfiguration, null).constructCallgraph();
     }
 }
