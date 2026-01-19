@@ -49,11 +49,11 @@ public class CLI {
 
             classFeatures(classPath, outPath,androidJars, null, null);
             methodFeatures(classPath, outPath,androidJars, null, null);
-//            wpFeatures(classPath, outPath, androidJars,null, null, null);
+            wpFeatures(classPath, outPath, androidJars,null, null, null);
 
-//            if(!StringUtils.isEmpty(androidJars) && classPath.endsWith(".apk")){
-//                manifestFeatures(classPath, outPath, androidJars, null, null);
-//            }
+            if(!StringUtils.isEmpty(androidJars) && classPath.endsWith(".apk")){
+                manifestFeatures(classPath, outPath, androidJars, null, null);
+            }
 
         }else if(!StringUtils.isEmpty(configPath)){
             Config config = getConfig(configPath);
