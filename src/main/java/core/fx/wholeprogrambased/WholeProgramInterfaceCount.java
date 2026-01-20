@@ -7,6 +7,7 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.jimple.toolkits.callgraph.CallGraph;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ public class WholeProgramInterfaceCount extends WholeProgramMethodBasedFEU<Long>
 
     @Override
     protected Feature<Long> extractWithMethods(CallGraph cg, Set<SootMethod> methods) {
-        Set<SootClass> interfaces = methods.stream().map(SootMethod::getDeclaringClass).distinct().filter(SootClass::isInterface).collect(Collectors.toSet());
+        Set<SootClass> interfaces = methods.stream().filter(Objects::nonNull).map(SootMethod::getDeclaringClass).distinct().filter(SootClass::isInterface).collect(Collectors.toSet());
         return new Feature<>(this.getClass().getSimpleName(), (long) interfaces.size());
     }
 }

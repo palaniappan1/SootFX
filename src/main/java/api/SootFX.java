@@ -231,7 +231,12 @@ public class SootFX {
             String instanceName = set.getSignature();
             writer.append("name;");
             for (Feature feature : set.getFeatures()) {
-                writer.append(feature.getName() + ";");
+                if(path.contains("wp.csv")){
+                    writer.append(feature.getName().replace("WholeProgram", "Reachable") + ";");
+                }
+                else{
+                    writer.append(feature.getName() + ";");
+                }
             }
             writer.append(System.lineSeparator());
             writer.append(instanceName + ";");

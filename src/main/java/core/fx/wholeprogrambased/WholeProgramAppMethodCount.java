@@ -10,6 +10,7 @@ import soot.jimple.toolkits.callgraph.Edge;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -22,13 +23,15 @@ public class WholeProgramAppMethodCount implements WholeProgramFEU<Long> {
     public Feature<Long> extract(CallGraph target) {
         Iterator<Edge> iterator = target.iterator();
         Set<SootMethod> methods = new HashSet<>();
-        Stream<Edge> stream = Streams.stream(iterator);
+        Stream<Edge> stream = Streams.stream(iterator).filter(Objects::nonNull);
         stream.forEach(e-> {
-            if(FxUtil.isAppMethod(e.src())){
-                methods.add(e.src());
-            }
-            if(FxUtil.isAppMethod(e.tgt())){
-                methods.add(e.tgt());
+            if(e.src() != null && e.tgt() != null){
+                if(FxUtil.isAppMethod(e.src())){
+                    methods.add(e.src());
+                }
+                if(FxUtil.isAppMethod(e.tgt())){
+                    methods.add(e.tgt());
+                }
             }
         });
         long methodCount = methods.size();

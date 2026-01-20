@@ -7,12 +7,13 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.jimple.toolkits.callgraph.CallGraph;
 
+import java.util.Objects;
 import java.util.Set;
 
 public class WholeProgramOverridenMethods extends WholeProgramMethodBasedFEU<Long>{
     @Override
     protected Feature<Long> extractWithMethods(CallGraph cg, Set<SootMethod> methods) {
-        long count = methods.stream()
+        long count = methods.stream().filter(Objects::nonNull)
                 .filter(FxUtil::isOverriden)
                 .count();
         return new Feature<>(this.getClass().getSimpleName(), count);

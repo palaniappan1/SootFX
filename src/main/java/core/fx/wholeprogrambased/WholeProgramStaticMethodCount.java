@@ -9,6 +9,7 @@ import soot.jimple.toolkits.callgraph.Edge;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -20,7 +21,7 @@ public class WholeProgramStaticMethodCount extends WholeProgramMethodBasedFEU<Lo
 
     @Override
     protected Feature<Long> extractWithMethods(CallGraph cg, Set<SootMethod> methods) {
-        long count = methods.stream().filter(SootMethod::isStatic).count();
+        long count = methods.stream().filter(Objects::nonNull).filter(SootMethod::isStatic).count();
         return new Feature<>(this.getClass().getSimpleName(), count);
     }
 }

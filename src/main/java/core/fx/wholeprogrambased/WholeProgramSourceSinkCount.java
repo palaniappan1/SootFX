@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class WholeProgramSourceSinkCount extends WholeProgramMethodBasedFEU<Long>{
 
@@ -36,6 +38,7 @@ public abstract class WholeProgramSourceSinkCount extends WholeProgramMethodBase
     @Override
     protected Feature<Long> extractWithMethods(CallGraph cg, Set<SootMethod> methods) {
         long count = 0;
+        methods = methods.stream().filter(Objects::nonNull).collect(Collectors.toSet());
         for (SootMethod method : methods) {
             if (!method.isConcrete()) continue;
             try {

@@ -16,6 +16,9 @@ import java.util.List;
 public class SootConnector {
 
     public static void setupSoot(String mainClass, List<String> classPaths, boolean appOnly, String androidJars) {
+        if(Scene.v().hasCallGraph()){
+            return;
+        }
         G.reset();
         Options.v().set_prepend_classpath(true);
         Options.v().set_include_all(true);

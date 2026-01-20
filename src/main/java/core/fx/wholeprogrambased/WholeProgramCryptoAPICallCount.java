@@ -10,6 +10,7 @@ import soot.jimple.toolkits.callgraph.Edge;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
@@ -25,9 +26,9 @@ public class WholeProgramCryptoAPICallCount implements WholeProgramFEU<Long> {
     public Feature<Long> extract(CallGraph target) {
         Iterator<Edge> iterator = target.iterator();
         Set<SootMethod> methods = new HashSet<>();
-        Stream<Edge> stream = Streams.stream(iterator);
+        Stream<Edge> stream = Streams.stream(iterator).filter(Objects::nonNull);
         stream.forEach(edge -> {
-            if(FxUtil.isCryptoPackage(edge.tgt().getDeclaringClass().getPackageName())){
+            if(edge.tgt() != null && FxUtil.isCryptoPackage(edge.tgt().getDeclaringClass().getPackageName())){
                 // This methods list shows all the methods from where the crypto calls are made
                 // The design decision here is that we should know the number of methods which has any crypto calls
                 methods.add(edge.src());

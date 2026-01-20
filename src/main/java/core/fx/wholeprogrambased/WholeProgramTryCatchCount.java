@@ -1,9 +1,11 @@
 package core.fx.wholeprogrambased;
 
 import core.fx.base.Feature;
+import soot.Body;
 import soot.SootMethod;
 import soot.jimple.toolkits.callgraph.CallGraph;
 
+import java.util.Objects;
 import java.util.Set;
 
 /*
@@ -15,10 +17,12 @@ public class WholeProgramTryCatchCount extends WholeProgramMethodBasedFEU<Long>{
     @Override
     protected Feature<Long> extractWithMethods(CallGraph cg, Set<SootMethod> methods) {
         long count = methods.stream()
+                .filter(Objects::nonNull)
                 .filter(SootMethod::hasActiveBody)
                 .map(SootMethod::getActiveBody)
                 .mapToLong(body -> body.getTraps().size())
                 .sum();
+
         return new Feature<>(this.getClass().getSimpleName(), count);
     }
 }

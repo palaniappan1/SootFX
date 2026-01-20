@@ -5,11 +5,13 @@ import core.fx.base.WholeProgramFEU;
 import soot.Body;
 import soot.SootMethod;
 import soot.jimple.AssignStmt;
+import soot.jimple.internal.JAssignStmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 /*
@@ -20,11 +22,11 @@ public class WholeProgramAssignStmtCount extends WholeProgramMethodBasedFEU<Long
 
     @Override
     protected Feature<Long> extractWithMethods(CallGraph cg, Set<SootMethod> methods) {
-        long count = methods.stream()
+        long count = methods.stream().filter(Objects::nonNull)
                 .filter(SootMethod::hasActiveBody)
                 .map(SootMethod::getActiveBody)
                 .flatMap(body -> body.getUnits().stream())
-                .filter(unit -> unit instanceof AssignStmt)
+                .filter(unit -> unit instanceof JAssignStmt)
                 .count();
         return new Feature<>(this.getClass().getSimpleName(), count);
     }
