@@ -13,8 +13,8 @@ public class MethodParamIsInterface implements MethodFEU<Boolean> {
         if(target.getParameterCount()>0){
             for(Type t: target.getParameterTypes()){
                 SootClass sc = Scene.v().forceResolve(t.toString(), SootClass.HIERARCHY);
-                if(sc!=null){
-                    return new Feature<>(getName(), sc.isInterface());
+                if(sc!=null && sc.isInterface()){
+                    return new Feature<>(getName(), true);
                 }
             }
         }

@@ -8,6 +8,6 @@ public class IsMethodClassFinal implements MethodFEU<Boolean> {
 
     @Override
     public Feature<Boolean> extract(SootMethod target) {
-        return new Feature<>(getName(), target.getDeclaringClass().isStatic());
+        return new Feature<>(getName(), target.getDeclaringClass().isFinal());
     }
 }

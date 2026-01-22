@@ -1,4 +1,13 @@
 package core.fx.methodbased;
 
-public class IsMethodClassStatic {
+import core.fx.base.Feature;
+import core.fx.base.MethodFEU;
+import soot.SootMethod;
+
+public class IsMethodClassStatic implements MethodFEU<Boolean> {
+
+    @Override
+    public Feature<Boolean> extract(SootMethod target) {
+        return new Feature<>(getName(), target.getDeclaringClass().isStatic());
+    }
 }
