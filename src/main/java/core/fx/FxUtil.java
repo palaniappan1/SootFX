@@ -16,6 +16,7 @@ import soot.jimple.infoflow.android.manifest.ProcessManifest;
 import soot.util.Chain;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -203,4 +204,77 @@ public class FxUtil {
                 (className.equals("java.lang.Class") && methodName.equals("getDeclaredField"));
     }
 
+    public static boolean isFileHandingPackage(String packageName) {
+        return packageName.startsWith("java.io") ||
+                packageName.startsWith("java.nio.file") ||
+                packageName.startsWith("org.apache.commons.io.") ||
+                packageName.startsWith("com.google.common.io.");
+    }
+
+    public static boolean isEventListenerMethod(String methodName) {
+        return methodName.equals("onClick")
+                || methodName.equals("onLongClick")
+                || methodName.equals("onTouch")
+                || methodName.equals("onKey")
+                || methodName.equals("onFocusChange")
+                || methodName.equals("beforeTextChanged")
+                || methodName.equals("onTextChanged")
+                || methodName.equals("afterTextChanged")
+                || methodName.equals("onEditorAction")
+                || methodName.equals("onItemClick")
+                || methodName.equals("onItemLongClick")
+                || methodName.equals("onItemSelected")
+                || methodName.equals("onCheckedChanged")
+                || methodName.equals("onActivityResult")
+                || methodName.equals("onRequestPermissionsResult")
+                || methodName.equals("onNewIntent")
+                || methodName.equals("onReceive")
+                || methodName.equals("onSensorChanged")
+                || methodName.equals("onLocationChanged")
+                || methodName.equals("onMapReady")
+                || methodName.equals("onHover")
+                || methodName.equals("onDrag")
+                || methodName.equals("onNothingSelected")
+                ;
+    }
+
+    public static boolean isLifeCycleMethod(String methodName) {
+        return methodName.equals("onCreate")
+                || methodName.equals("onStart")
+                || methodName.equals("onResume")
+                || methodName.equals("onPause")
+                || methodName.equals("onStop")
+                || methodName.equals("onDestroy")
+                || methodName.equals("onRestart")
+                || methodName.equals("onSaveInstanceState")
+                || methodName.equals("onRestoreInstanceState")
+                || methodName.equals("onNewIntent")
+                || methodName.equals("onActivityResult")
+                || methodName.equals("onStartCommand")
+                || methodName.equals("onBind")
+                || methodName.equals("onUnbind")
+                || methodName.equals("onRebind")
+                || methodName.equals("onReceive")
+                || methodName.equals("query")
+                || methodName.equals("insert")
+                || methodName.equals("update")
+                || methodName.equals("delete");
+    }
+
+    public static boolean isLoggerPackage(String packageName) {
+        return packageName.startsWith("java.util.logging") ||
+                packageName.startsWith("org.apache.logging") ||
+                packageName.startsWith("org.slf4j") ||
+                packageName.startsWith("ch.qos.logback");
+    }
+
+    public static boolean isNetworkAPIPackage(String packageName) {
+        return packageName.startsWith("java.net") ||
+                packageName.startsWith("javax.net") ||
+                packageName.startsWith("okhttp3") ||
+                packageName.startsWith("org.apache.http") ||
+                packageName.startsWith("java.nio") ||
+                packageName.startsWith("android.net")||
+                packageName.startsWith("com.android.volley");
+    }
 }
