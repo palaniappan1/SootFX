@@ -30,18 +30,6 @@ public class IsMethodRealSetter implements MethodFEU<Boolean> {
                         }
                     }
                 }
-                if (u instanceof Stmt) {
-                    Stmt stmt = (Stmt) u;
-                    if (stmt.containsInvokeExpr()) {
-                        if (stmt.getInvokeExpr().getMethod().getName().startsWith("get")){
-                            for (Value arg : stmt.getInvokeExpr().getArgs()){
-                                if (paramVals.contains(arg)){
-                                    return new Feature<>(getName(), true);
-                                }
-                            }
-                        }
-                    }
-                }
             }
             return new Feature<>(getName(), false);
         }
