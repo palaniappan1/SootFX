@@ -8,6 +8,6 @@ public class MethodHasReturnType implements MethodFEU<Boolean> {
 
     @Override
     public Feature<Boolean> extract(SootMethod target) {
-        return new Feature<>(getName(), !target.getReturnType().equals("void"));
+        return new Feature<>(getName(), !target.getReturnType().toString().equals("void"));
     }
 }
